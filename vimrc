@@ -1,13 +1,14 @@
 " Основные
 
-	colo molokai
-
 	filetype plugin indent on
 
 	syntax on
 
+	colo molokai
+
    set lz					" Перерисовывает только когда это нужно
    set hid					" Не выгружать буфер, когда переключаемся на другой
+   set ar	        " Перечитывать изменённые файлы автоматически
    set aw					" Сохраняет файл при переключении между файлами
    set sb					" Разрешает разделение экрана горизонтально
    set spr					" Разрешает разделение экрана вертикально
@@ -24,12 +25,13 @@
    set mousem=popup
 
    set ff=unix					" Формат файла по умолчанию - будет перебираться в указанном порядке
-   set ul=1024					" Хранить историю изменений числом N
 
 	set backspace=indent,eol,start
    set dict+=g:path.'/dictionary'	    " Указывает где создать словарь для пользовательских расширений
    set clipboard=unnamed,unnamedplus    " Указывает использовать системный буфер обмена вместо буфера Vim
 	set secure
+	set wcm=<Tab>
+	set ttimeoutlen=10
 
 	if has('unix')
       set bdir=/tmp/
@@ -56,7 +58,6 @@
 
 " Поиск
 
-   set ar	        " Перечитывать изменённые файлы автоматически
    set hls	        " Подсвечивание результатов поиска
    set is	        " Поиск в процессе набора
    set ignorecase   " Игнорирует регистр букв при поиске
@@ -86,7 +87,6 @@
    set ts=3         " Размер табуляции
    set shiftwidth=3 " Размер сдвига
    set sts=3
-   set cin				" Отступы в стиле С
    
 " Запрещенные форматы
 
@@ -109,12 +109,17 @@
    set ch=1				" Делает строку команд высотой в одну строку
    set so=3				" Количество строк внизу и вверху экрана показываемое при прокрутке
    set ls=2				" Всегда показывает строку состояния
-   set tw=120
+   set tw=130
 	set cul
 
    let &t_SI = "\e[6 q"
    let &t_SR = "\e[4 q"
    let &t_EI = "\e[2 q"
+	
+	augroup ccs
+		au!
+		autocmd VimEnter * silent !echo -ne "\e[2 q"
+	augroup END
 
 " Сочетания клавиш
 
@@ -139,14 +144,11 @@
 
 	" Командная строка
 	
-		cno W! w
+		cno W! w!
 		cno Q! q!
 		cno Qall! qall!
 		cno Wq wq
 		cno wQ wq
-		cno Wa wa
-		cno W w
-		cno Q q
 		cno Qall qall
 		cno vb vert sb
 

@@ -17,12 +17,6 @@ else
 endif
 let g:colors_name="molokai"
 
-"if exists("g:molokai_original")
-    "let s:molokai_original = g:molokai_original
-"else
-    "let s:molokai_original = 0
-"endif
-
 hi Boolean         guifg=#AE81FF
 hi Character       guifg=#E6DB74
 hi Number          guifg=#AE81FF
@@ -105,41 +99,30 @@ hi WildMenu        guifg=#66D9EF guibg=#000000
 hi TabLineFill     guifg=#1B1D1E guibg=#1B1D1E
 hi TabLine         guibg=#1B1D1E guifg=#808080 gui=none
 
-"if s:molokai_original == 1
-   "hi Normal          guifg=#F8F8F2 guibg=#272822
-   "hi Comment         guifg=#75715E
-   "hi CursorLine                    guibg=bg
-   "hi CursorLineNr    guifg=#FD971F               gui=none
-   "hi CursorColumn                  guibg=#3E3D32
-   "hi ColorColumn                   guibg=#3B3A32
-   "hi LineNr          guifg=#BCBCBC guibg=#3B3A32
-   "hi NonText         guifg=#75715E
-   "hi SpecialKey      guifg=#75715E
-"else
-   hi Normal          guifg=#F8F8F2 guibg=#1B1D1E
-   hi Comment         guifg=#7E8E91
-   hi CursorLine                    guibg=bg
-   hi CursorLineNr    guifg=#FD971F               gui=none
-   hi CursorColumn                  guibg=#293739
-   hi ColorColumn                   guibg=#232526
-   hi LineNr          guifg=#465457 guibg=#232526
-   hi NonText         guifg=#465457
-   hi SpecialKey      guifg=#465457
-"end
+hi Normal          guifg=#F8F8F2 guibg=#1B1D1E
+hi Comment         guifg=#7E8E91
+hi CursorLine                    guibg=bg
+hi CursorLineNr    guifg=#FD971F               gui=none
+hi CursorColumn                  guibg=#293739
+hi ColorColumn                   guibg=#232526
+hi LineNr          guifg=#465457 guibg=#232526
+hi NonText         guifg=#465457
+hi SpecialKey      guifg=#465457
+
+hi StatusLineNormal     guifg=#000000 guibg=#00FF00 gui=bold
+hi StatusLineInsert     guifg=#000000 guibg=#00FFFF gui=bold
+hi StatusLineReplace    guifg=#000000 guibg=#FF00FF gui=bold
+hi StatusLineVisual     guifg=#000000 guibg=#FFFF00 gui=bold
+hi StatusLineDelimeter	guifg=bg      guibg=#455354 gui=italic
+hi StatusLineAlert		guifg=#FF0000 guibg=#455354 gui=bold
 
 "
 " Support for 256-color terminal
 "
 if &t_Co > 255
-   "if s:molokai_original == 1
-      "hi Normal                   ctermbg=234
-      "hi CursorLine               ctermbg=235   cterm=none
-      "hi CursorLineNr ctermfg=208               cterm=none
-   "else
-      hi Normal       ctermfg=252 ctermbg=233
-      hi CursorLine               ctermbg=234   cterm=none
-      hi CursorLineNr ctermfg=208               cterm=none
-   "endif
+	hi Normal       ctermfg=252 ctermbg=233
+	hi CursorLine               ctermbg=234   cterm=none
+	hi CursorLineNr ctermfg=208               cterm=none
    hi Boolean         ctermfg=135
    hi Character       ctermfg=144
    hi Number          ctermfg=135
@@ -228,6 +211,13 @@ if &t_Co > 255
 
    hi SpecialKey      ctermfg=59
 
+	hi StatusLineNormal     ctermfg=232 ctermbg=46  cterm=bold
+	hi StatusLineInsert     ctermfg=232 ctermbg=51  cterm=bold
+	hi StatusLineReplace    ctermfg=232 ctermbg=201 cterm=bold
+	hi StatusLineVisual     ctermfg=232 ctermbg=226 cterm=bold
+	hi StatusLineDelimeter	ctermfg=bg  ctermbg=238 cterm=italic
+	hi StatusLineAlert		ctermfg=196 ctermbg=238 cterm=bold
+
    if exists("g:rehash256") && g:rehash256 == 1
        hi Normal       ctermfg=252 ctermbg=234
        hi CursorLine               ctermbg=236   cterm=none
@@ -266,12 +256,5 @@ if &t_Co > 255
        hi SpecialKey      ctermfg=239
    endif
 end
-
-hi StatusLineNormal       guifg=#000000 guibg=#00FF00 gui=bold
-hi StatusLineInsert       guifg=#000000 guibg=#00FFFF gui=bold
-hi StatusLineReplace      guifg=#000000 guibg=#FF00FF gui=bold
-hi StatusLineVisual       guifg=#000000 guibg=#FFFF00 gui=bold
-hi StatusLineDelimeter    guifg=bg      guibg=#455354 gui=italic
-hi StatusLineAlert		  guifg=#FF0000 guibg=#455354 gui=bold
 
 set background=dark
