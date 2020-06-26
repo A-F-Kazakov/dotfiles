@@ -1,5 +1,5 @@
 if exists('g:loaded_statusline')
-  finish
+	finish
 endif
 let g:loaded_statusline = 1
 
