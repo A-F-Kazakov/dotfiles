@@ -10,10 +10,7 @@ setlocal nowrap
 setlocal fdls=0
 setlocal fdm=syntax	
 setlocal noic
-setlocal list
-setlocal fcs=fold:\ 
 
 setlocal syntax=c.doxygen
 setlocal foldtext=MyFoldText()
 
-hi Folded guibg=NONE

@@ -84,7 +84,7 @@ let g:tags_file = g:project_cfg_dir . "/tags"
 " interface
 
 	au VimLeavePre * silent! exe "mks! " . g:session_file
-	au VimEnter * call s:project_check()
+	au VimEnter * silent! call s:project_check()
 
 	command! Init call s:project_initiate()
 	command! Clean call s:project_clean()
