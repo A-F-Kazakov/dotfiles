@@ -135,7 +135,10 @@
    nn <Tab> >>
    nn <S-Tab> <<
 
-   nn dl yypi<Esc>
+   vn <Tab> >>
+   vn <S-Tab> <<
+
+   nn dl yyp
 	nn K i<Cr><Esc>
 	nn U <C-r>
 
