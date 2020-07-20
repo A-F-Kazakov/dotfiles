@@ -15,3 +15,7 @@ function! ProjectInitiate()
 		endif
 	endif
 endfunction
+
+if filereadable(".ide/config")
+	so .ide/config
+endif

@@ -211,10 +211,3 @@
 			end
 		end
 	endfunction
-
-" Локальный файл конфигурации
-
-   if filereadable(".ide/ide")
-      so .ide/ide
-   endif
-	
