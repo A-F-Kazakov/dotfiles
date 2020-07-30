@@ -42,18 +42,18 @@
 " Орфография
 
    if version >= 700
-      menu Spell.off :setlocal spell spelllang=<Cr>:setlocal nospell<Cr>
-      menu Spell.Russian+English :setlocal spell spelllang=ru_yo,en_us<Cr>
-      menu Spell.Russian :setlocal spell spelllang=ru<Cr>
-      menu Spell.English :setlocal spell spelllang=en<Cr>
-      menu Spell.-SpellControl- :
-      menu Spell.Word\ Suggest<Tab>z= z=
-      menu Spell.Add\ To\ Dictionary<Tab>zg zg
-      menu Spell.Add\ To\ TemporaryDictionary<Tab>zG zG
-      menu Spell.Remove\ From\ Dictionary<Tab>zw zw
-      menu Spell.Remove\ From\ Temporary\ Dictionary<Tab>zW zW
-      menu Spell.Previous\ Wrong\ Word<Tab>[s [s
-      menu Spell.Next\ Wrong\ Word<Tab>]s ]s
+      me Spell.off :setlocal spell spelllang=<Cr>:setlocal nospell<Cr>
+      me Spell.Russian+English :setlocal spell spelllang=ru_yo,en_us<Cr>
+      me Spell.Russian :setlocal spell spelllang=ru<Cr>
+      me Spell.English :setlocal spell spelllang=en<Cr>
+      me Spell.-SpellControl- :
+      me Spell.Word\ Suggest<Tab>z= z=
+      me Spell.Add\ To\ Dictionary<Tab>zg zg
+      me Spell.Add\ To\ TemporaryDictionary<Tab>zG zG
+      me Spell.Remove\ From\ Dictionary<Tab>zw zw
+      me Spell.Remove\ From\ Temporary\ Dictionary<Tab>zW zW
+      me Spell.Previous\ Wrong\ Word<Tab>[s [s
+      me Spell.Next\ Wrong\ Word<Tab>]s ]s
    endif
 
 " Поиск
@@ -116,10 +116,18 @@
    let &t_SR = "\e[4 q"
    let &t_EI = "\e[2 q"
 	
-	augroup ccs
+	aug ccs
 		au!
-		autocmd VimEnter * silent !echo -ne "\e[2 q"
-	augroup END
+		au VimEnter * silent !echo -ne "\e[2 q"
+	aug END
+
+" Браузер	
+
+	let g:netrw_browse_split = 4
+	let g:netrw_altv = 1
+	let g:netrw_banner = 0
+	let g:netrw_liststyle = 3
+	let g:netrw_winsize = 25
 
 " Сочетания клавиш
 
@@ -144,6 +152,8 @@
 
 	nn \\ :call ToggleComment()<Cr>
 	vn \\ :call ToggleComment()<Cr>
+
+	nn `` :call ToggleVExplorer()<CR>
 
 	" Командная строка
 	
@@ -172,42 +182,61 @@
 
 	" Выбор кодировки, в которой читать файл
 
-		menu Encoding.Read.utf-8<Tab><F7> :e ++enc=utf8 <Cr>
-		menu Encoding.Read.windows-1251<Tab><F7> :e ++enc=cp1251<Cr>
-		menu Encoding.Read.koi8-r<Tab><F7> :e ++enc=koi8-r<Cr>
-		menu Encoding.Read.cp866<Tab><F7> :e ++enc=cp866<Cr>
+		me Encoding.Read.utf-8<Tab><F7> :e ++enc=utf8 <Cr>
+		me Encoding.Read.windows-1251<Tab><F7> :e ++enc=cp1251<Cr>
+		me Encoding.Read.koi8-r<Tab><F7> :e ++enc=koi8-r<Cr>
+		me Encoding.Read.cp866<Tab><F7> :e ++enc=cp866<Cr>
 		map <F7> :emenu Encoding.Read.<Tab>
 
 	" Выбор кодировки, в которой сохранять файл
 
-		menu Encoding.Write.utf-8<Tab><F6> :set fenc=utf8 <Cr>
-		menu Encoding.Write.windows-1251<Tab><F6> :set fenc=cp1251<Cr>
-		menu Encoding.Write.koi8-r<Tab><F6> :set fenc=koi8-r<Cr>
-		menu Encoding.Write.cp866<Tab><F6> :set fenc=cp866<Cr>
+		me Encoding.Write.utf-8<Tab><F6> :set fenc=utf8 <Cr>
+		me Encoding.Write.windows-1251<Tab><F6> :set fenc=cp1251<Cr>
+		me Encoding.Write.koi8-r<Tab><F6> :set fenc=koi8-r<Cr>
+		me Encoding.Write.cp866<Tab><F6> :set fenc=cp866<Cr>
 		map <F6> :emenu Encoding.Write.<Tab>
 
 	" Выбор формата концов строк 
    
-		menu Encoding.End_line_format.unix<Tab><F8> :set fileformat=unix<Cr>
-		menu Encoding.End_line_format.dos<Tab><F8> :set fileformat=dos<Cr>
-		menu Encoding.End_line_format.mac<Tab><F8> :set fileformat=mac<Cr>
+		me Encoding.End_line_format.unix<Tab><F8> :set fileformat=unix<Cr>
+		me Encoding.End_line_format.dos<Tab><F8> :set fileformat=dos<Cr>
+		me Encoding.End_line_format.mac<Tab><F8> :set fileformat=mac<Cr>
 		map <F8> :emenu Encoding.End_line_format.<Tab>
 
 " Функции
 
 	let s:comment_map = { "c": '\/\/', "cpp": '\/\/', "sh": '#', "fstab": '#', "conf": '#', "profile": '#', "bashrc": '#', "bash_profile": '#', "vim": '"', "tex": '%' }
 
-	function! ToggleComment()
+	fu! ToggleComment()
 		if has_key(s:comment_map, &filetype)
-        let comment_leader = s:comment_map[&filetype]
+			let comment_leader = s:comment_map[&filetype]
 			if getline('.') =~ "^\\s*" . comment_leader . " " 
-				execute "silent s/^\\(\\s*\\)" . comment_leader . " /\\1/"
+				exe "silent s/^\\(\\s*\\)" . comment_leader . " /\\1/"
 			else 
 				if getline('.') =~ "^\\s*" . comment_leader
-					execute "silent s/^\\(\\s*\\)" . comment_leader . "/\\1/"
+					exe "silent s/^\\(\\s*\\)" . comment_leader . "/\\1/"
 				else
-					execute "silent s/^\\(\\s*\\)/\\1" . comment_leader . " /"
+					exe "silent s/^\\(\\s*\\)/\\1" . comment_leader . " /"
 				end
 			end
 		end
-	endfunction
+	endfu
+
+	fu! ToggleVExplorer()
+		if exists("t:expl_buf_num")
+			let expl_win_num = bufwinnr(t:expl_buf_num)
+			let cur_win_num = winnr()
+			if expl_win_num != -1
+				wh expl_win_num != cur_win_num
+					exe "wincmd w"
+					let cur_win_num = winnr()
+            endwh
+            clo
+        end
+        unlet t:expl_buf_num
+		else
+			Vexplore
+         let t:expl_buf_num = bufnr("%")
+		endif
+	endfu
+
