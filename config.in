@@ -15,3 +15,4 @@ set fdo=""
 set fcl=""
 
 runtime! ide.vim
+runtime! tagbar.vim

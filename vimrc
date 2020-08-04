@@ -153,7 +153,7 @@
 	nn \\ :call ToggleComment()<Cr>
 	vn \\ :call ToggleComment()<Cr>
 
-	nn `` :call ToggleVExplorer()<CR>
+	nn `` :call ToggleVExplorer()<Cr>
 
 	" Командная строка
 	
