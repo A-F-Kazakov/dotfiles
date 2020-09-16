@@ -14,10 +14,6 @@ if !exists('g:move_map_keys')
     let g:move_map_keys = 1
 endif
 
-if !exists('g:move_key_modifier')
-    let g:move_key_modifier = 'A'
-endif
-
 if !exists('g:move_auto_indent')
     let g:move_auto_indent = 1
 endif
@@ -192,13 +188,8 @@ function s:MoveBlockHorizontally(distance)
     endif
 endfunction
 
-
 function s:HalfPageSize()
     return winheight('.') / 2
-endfunction
-
-function s:MoveKey(key)
-    return '<' . g:move_key_modifier . '-' . a:key . '>'
 endfunction
 
 " Note: An older version of this program used callbacks with the "range"
@@ -208,29 +199,27 @@ endfunction
 " also return the wrong results. Because of this, we have switched everything
 " to using <C-u>.
 
-vnoremap <silent> <Plug>MoveBlockDown           :<C-u> silent call <SID>MoveBlockVertically( v:count1)<CR>
-vnoremap <silent> <Plug>MoveBlockUp             :<C-u> silent call <SID>MoveBlockVertically(-v:count1)<CR>
-vnoremap <silent> <Plug>MoveBlockHalfPageDown   :<C-u> silent call <SID>MoveBlockVertically( v:count1 * <SID>HalfPageSize())<CR>
-vnoremap <silent> <Plug>MoveBlockHalfPageUp     :<C-u> silent call <SID>MoveBlockVertically(-v:count1 * <SID>HalfPageSize())<CR>
-vnoremap <silent> <Plug>MoveBlockRight          :<C-u> silent call <SID>MoveBlockHorizontally( v:count1)<CR>
-vnoremap <silent> <Plug>MoveBlockLeft           :<C-u> silent call <SID>MoveBlockHorizontally(-v:count1)<CR>
+"vnoremap <silent> <Plug>MoveBlockDown           :<C-u> silent call <SID>MoveBlockVertically( v:count1)<CR>
+"vnoremap <silent> <Plug>MoveBlockUp             :<C-u> silent call <SID>MoveBlockVertically(-v:count1)<CR>
+"vnoremap <silent> <Plug>MoveBlockHalfPageDown   :<C-u> silent call <SID>MoveBlockVertically( v:count1 * <SID>HalfPageSize())<CR>
+"vnoremap <silent> <Plug>MoveBlockHalfPageUp     :<C-u> silent call <SID>MoveBlockVertically(-v:count1 * <SID>HalfPageSize())<CR>
+"vnoremap <silent> <Plug>MoveBlockRight          :<C-u> silent call <SID>MoveBlockHorizontally( v:count1)<CR>
+"vnoremap <silent> <Plug>MoveBlockLeft           :<C-u> silent call <SID>MoveBlockHorizontally(-v:count1)<CR>
+"
+"nnoremap <silent> <Plug>MoveLineDown            :<C-u> silent call <SID>MoveLineVertically( v:count1)<CR>
+"nnoremap <silent> <Plug>MoveLineUp              :<C-u> silent call <SID>MoveLineVertically(-v:count1)<CR>
+"nnoremap <silent> <Plug>MoveLineHalfPageDown    :<C-u> silent call <SID>MoveLineVertically( v:count1 * <SID>HalfPageSize())<CR>
+"nnoremap <silent> <Plug>MoveLineHalfPageUp      :<C-u> silent call <SID>MoveLineVertically(-v:count1 * <SID>HalfPageSize())<CR>
+"nnoremap <silent> <Plug>MoveCharRight           :<C-u> silent call <SID>MoveCharHorizontally( v:count1)<CR>
+"nnoremap <silent> <Plug>MoveCharLeft            :<C-u> silent call <SID>MoveCharHorizontally(-v:count1)<CR>
 
-nnoremap <silent> <Plug>MoveLineDown            :<C-u> silent call <SID>MoveLineVertically( v:count1)<CR>
-nnoremap <silent> <Plug>MoveLineUp              :<C-u> silent call <SID>MoveLineVertically(-v:count1)<CR>
-nnoremap <silent> <Plug>MoveLineHalfPageDown    :<C-u> silent call <SID>MoveLineVertically( v:count1 * <SID>HalfPageSize())<CR>
-nnoremap <silent> <Plug>MoveLineHalfPageUp      :<C-u> silent call <SID>MoveLineVertically(-v:count1 * <SID>HalfPageSize())<CR>
-nnoremap <silent> <Plug>MoveCharRight           :<C-u> silent call <SID>MoveCharHorizontally( v:count1)<CR>
-nnoremap <silent> <Plug>MoveCharLeft            :<C-u> silent call <SID>MoveCharHorizontally(-v:count1)<CR>
 
+vn J :<C-u> silent call <SID>MoveBlockVertically( v:count1)<CR>
+vn K :<C-u> silent call <SID>MoveBlockVertically(-v:count1)<CR>
+vn H :<C-u> silent call <SID>MoveBlockHorizontally(-v:count1)<CR>
+vn L :<C-u> silent call <SID>MoveBlockHorizontally( v:count1)<CR>
 
-if g:move_map_keys
-    execute 'vmap' s:MoveKey('j') '<Plug>MoveBlockDown'
-    execute 'vmap' s:MoveKey('k') '<Plug>MoveBlockUp'
-    execute 'vmap' s:MoveKey('h') '<Plug>MoveBlockLeft'
-    execute 'vmap' s:MoveKey('l') '<Plug>MoveBlockRight'
-
-    execute 'nmap' s:MoveKey('j') '<Plug>MoveLineDown'
-    execute 'nmap' s:MoveKey('k') '<Plug>MoveLineUp'
-    execute 'nmap' s:MoveKey('h') '<Plug>MoveCharLeft'
-    execute 'nmap' s:MoveKey('l') '<Plug>MoveCharRight'
-endif
+no J :<C-u> silent call <SID>MoveLineVertically( v:count1)<CR>
+no K :<C-u> silent call <SID>MoveLineVertically(-v:count1)<CR>
+no H :<C-u> silent call <SID>MoveCharHorizontally(-v:count1)<CR>
+no L :<C-u> silent call <SID>MoveCharHorizontally( v:count1)<CR>
