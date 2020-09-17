@@ -34,10 +34,10 @@
 	set ttimeoutlen=10
 
 	if has('unix')
-      set bdir=/tmp/
-   elseif has('win32') || has('win64')
+      set bdir=/tmp
+   el
       set bdir=$TMP
-	endif
+	en
 
 " Орфография
 
@@ -54,7 +54,7 @@
       me Spell.Remove\ From\ Temporary\ Dictionary<Tab>zW zW
       me Spell.Previous\ Wrong\ Word<Tab>[s [s
       me Spell.Next\ Wrong\ Word<Tab>]s ]s
-   endif
+   en
 
 " Поиск
 
@@ -167,10 +167,26 @@
 
 	" Переключение между окнами
 	
-		no j <C-w>j
-		no k <C-w>k
-		no l <C-w>l
-		no h <C-w>h
+		if has('unix')
+			no j <C-w>j
+			no k <C-w>k
+			no l <C-w>l
+			no h <C-w>h
+		en
+
+	" Перемещение строк
+
+		if has('unix')
+			map J <Plug>MoveBlockDown
+			map K <Plug>MoveBlockUp
+			map H <Plug>MoveBlockLeft
+			map L <Plug>MoveBlockRight
+
+			map J <Plug>MoveLineDown
+			map K <Plug>MoveLineUp
+			map H <Plug>MoveLineLeft
+			map L <Plug>MoveLineRight
+		en
 
 	" Перемещения сплитов
 
@@ -219,14 +235,14 @@
 			let comment_leader = s:comment_map[&filetype]
 			if getline('.') =~ "^\\s*" . comment_leader . " " 
 				exe "silent s/^\\(\\s*\\)" . comment_leader . " /\\1/"
-			else 
+			el 
 				if getline('.') =~ "^\\s*" . comment_leader
 					exe "silent s/^\\(\\s*\\)" . comment_leader . "/\\1/"
-				else
+				el
 					exe "silent s/^\\(\\s*\\)/\\1" . comment_leader . " /"
-				end
-			end
-		end
+				en
+			en
+		en
 	endfu
 
 	fu! ToggleVExplorer()
@@ -237,13 +253,13 @@
 				wh expl_win_num != cur_win_num
 					exe "wincmd w"
 					let cur_win_num = winnr()
-            endwh
+            endw
             clo
         end
         unlet t:expl_buf_num
-		else
+		el
 			Vexplore
          let t:expl_buf_num = bufnr("%")
-		endif
+		en
 	endfu
 

@@ -1,6 +1,6 @@
 if exists('g:loaded_statusline')
 	finish
-endif
+en
 let g:loaded_statusline = 1
 
 set stl=%#StatusLineNormal#%{(mode()=='n')?'\ \ N\ ':''}
