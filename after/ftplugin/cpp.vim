@@ -1,2 +1,2 @@
-setlocal syntax=cpp.doxygen
+setl syntax=cpp.doxygen
 

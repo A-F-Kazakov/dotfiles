@@ -37,32 +37,32 @@ let s:last_highlight_tline = 0
 
 let s:warnings = {'type': [], 'encoding': 0}
 
-function! s:Init(silent) abort
+fu! s:Init(silent) abort
     if s:checked_ctags == 2 && a:silent
         return 0
     elseif s:checked_ctags != 1
         if !s:CheckForExCtags(a:silent)
             return 0
-        endif
-    endif
+        en
+    en
 
     if !s:checked_ctags_types
         call s:GetSupportedFiletypes()
-    endif
+    en
 
     if !s:type_init_done
         call s:InitTypes()
-    endif
+    en
 
     if !s:autocommands_done
         call s:CreateAutocommands()
         call s:AutoUpdate(fnamemodify(expand('%'), ':p'), 0)
-    endif
+    en
 
     return 1
-endfunction
+endf
 
-function! s:InitTypes() abort
+fu! s:InitTypes() abort
     let s:known_types = {}
 
     let type_asm = s:TypeInfo.New()
@@ -87,7 +87,7 @@ function! s:InitTypes() abort
         \ {'short' : 'u', 'long' : 'unions',      'fold' : 0, 'stl' : 1},
         \ {'short' : 'm', 'long' : 'members',     'fold' : 0, 'stl' : 0},
         \ {'short' : 'v', 'long' : 'variables',   'fold' : 0, 'stl' : 0},
-        \ {'short' : 'f', 'long' : 'functions',   'fold' : 0, 'stl' : 1}
+        \ {'short' : 'f', 'long' : 'fus',   'fold' : 0, 'stl' : 1}
     \ ]
     let type_asy.sro        = '::'
     let type_asy.kind2scope = {'g': 'enum', 's': 'struct', 'u': 'union'}
@@ -106,7 +106,7 @@ function! s:InitTypes() abort
         \ {'short' : 'u', 'long' : 'unions',      'fold' : 0, 'stl' : 1},
         \ {'short' : 'm', 'long' : 'members',     'fold' : 0, 'stl' : 0},
         \ {'short' : 'v', 'long' : 'variables',   'fold' : 0, 'stl' : 0},
-        \ {'short' : 'f', 'long' : 'functions',   'fold' : 0, 'stl' : 1}
+        \ {'short' : 'f', 'long' : 'fus',   'fold' : 0, 'stl' : 1}
     \ ]
     let type_c.sro        = '::'
     let type_c.kind2scope = {'g': 'enum', 's': 'struct', 'u': 'union'}
@@ -125,7 +125,7 @@ function! s:InitTypes() abort
         \ {'short' : 'c', 'long' : 'classes',     'fold' : 0, 'stl' : 1},
         \ {'short' : 's', 'long' : 'structs',     'fold' : 0, 'stl' : 1},
         \ {'short' : 'u', 'long' : 'unions',      'fold' : 0, 'stl' : 1},
-        \ {'short' : 'f', 'long' : 'functions',   'fold' : 0, 'stl' : 1},
+        \ {'short' : 'f', 'long' : 'fus',   'fold' : 0, 'stl' : 1},
         \ {'short' : 'm', 'long' : 'members',     'fold' : 0, 'stl' : 0},
         \ {'short' : 'v', 'long' : 'variables',   'fold' : 0, 'stl' : 0}
     \ ]
@@ -143,12 +143,12 @@ function! s:InitTypes() abort
             \ {'short' : 'i', 'long' : 'H2 headings',   'fold' : 0, 'stl' : 1},
             \ {'short' : 'j', 'long' : 'H3 headings',   'fold' : 0, 'stl' : 1},
         \ ]
-    else
+    el
         let type_html.kinds = [
-            \ {'short' : 'f', 'long' : 'JavaScript functions', 'fold' : 0, 'stl' : 1},
+            \ {'short' : 'f', 'long' : 'JavaScript fus', 'fold' : 0, 'stl' : 1},
             \ {'short' : 'a', 'long' : 'named anchors',        'fold' : 0, 'stl' : 1}
         \ ]
-    endif
+    en
     let s:known_types.html = type_html
 
     let type_javascript = s:TypeInfo.New()
@@ -157,25 +157,25 @@ function! s:InitTypes() abort
     if jsctags != ''
         let type_javascript.kinds = [
             \ {'short' : 'v', 'long' : 'variables', 'fold' : 0, 'stl' : 0},
-            \ {'short' : 'f', 'long' : 'functions', 'fold' : 0, 'stl' : 1}
+            \ {'short' : 'f', 'long' : 'fus', 'fold' : 0, 'stl' : 1}
         \ ]
         let type_javascript.sro        = '.'
         let type_javascript.kind2scope = {'v': 'namespace', 'f': 'namespace'}
         let type_javascript.scope2kind = {'namespace': 'v'}
         let type_javascript.ctagsbin   = jsctags
         let type_javascript.ctagsargs  = '-f -'
-    else
+    el
         let type_javascript.kinds = [
             \ {'short': 'v', 'long': 'global variables', 'fold': 0, 'stl': 0},
             \ {'short': 'c', 'long': 'classes',          'fold': 0, 'stl': 1},
             \ {'short': 'p', 'long': 'properties',       'fold': 0, 'stl': 0},
             \ {'short': 'm', 'long': 'methods',          'fold': 0, 'stl': 1},
-            \ {'short': 'f', 'long': 'functions',        'fold': 0, 'stl': 1},
+            \ {'short': 'f', 'long': 'fus',        'fold': 0, 'stl': 1},
         \ ]
         let type_javascript.sro        = '.'
-        let type_javascript.kind2scope = {'c': 'class', 'f': 'function', 'm': 'method', 'p': 'property'}
-        let type_javascript.scope2kind = {'class': 'c', 'function': 'f'}
-    endif
+        let type_javascript.kind2scope = {'c': 'class', 'f': 'fu', 'm': 'method', 'p': 'property'}
+        let type_javascript.scope2kind = {'class': 'c', 'fu': 'f'}
+    en
     let s:known_types.javascript = type_javascript
 
     let type_make = s:TypeInfo.New()
@@ -189,7 +189,7 @@ function! s:InitTypes() abort
         \ {'short' : 'P', 'long' : 'packages',               'fold' : 1, 'stl' : 1},
         \ {'short' : 'd', 'long' : 'prototypes',             'fold' : 0, 'stl' : 1},
         \ {'short' : 'c', 'long' : 'cursors',                'fold' : 0, 'stl' : 1},
-        \ {'short' : 'f', 'long' : 'functions',              'fold' : 0, 'stl' : 1},
+        \ {'short' : 'f', 'long' : 'fus',              'fold' : 0, 'stl' : 1},
         \ {'short' : 'F', 'long' : 'record fields',          'fold' : 0, 'stl' : 1},
         \ {'short' : 'L', 'long' : 'block label',            'fold' : 0, 'stl' : 1},
         \ {'short' : 'p', 'long' : 'procedures',             'fold' : 0, 'stl' : 1},
@@ -234,7 +234,7 @@ function! s:InitTypes() abort
     let type_vim.kinds     = [
         \ {'short' : 'n', 'long' : 'vimball filenames',  'fold' : 0, 'stl' : 1},
         \ {'short' : 'v', 'long' : 'variables',          'fold' : 1, 'stl' : 0},
-        \ {'short' : 'f', 'long' : 'functions',          'fold' : 0, 'stl' : 1},
+        \ {'short' : 'f', 'long' : 'fus',          'fold' : 0, 'stl' : 1},
         \ {'short' : 'a', 'long' : 'autocommand groups', 'fold' : 1, 'stl' : 1},
         \ {'short' : 'c', 'long' : 'commands',           'fold' : 0, 'stl' : 0},
         \ {'short' : 'm', 'long' : 'maps',               'fold' : 1, 'stl' : 0}
@@ -252,17 +252,17 @@ function! s:InitTypes() abort
     endfor
 
     let s:type_init_done = 1
-endfunction
+endf
 
-function! s:LoadUserTypeDefs(...) abort
+fu! s:LoadUserTypeDefs(...) abort
     if a:0 > 0
         let type = a:1
 
         let defdict = {}
         let defdict[type] = g:tagbar_type_{type}
-    else
+    el
         let defdict = tagbar#getusertypes()
-    endif
+    en
 
     let transformed = {}
     for [type, def] in items(defdict)
@@ -273,17 +273,17 @@ function! s:LoadUserTypeDefs(...) abort
     for [key, value] in items(transformed)
         if !has_key(s:known_types, key) || get(value, 'replace', 0)
             let s:known_types[key] = s:TypeInfo.New(value)
-        else
+        el
             call extend(s:known_types[key], value)
-        endif
+        en
     endfor
 
     if a:0 > 0
         call s:known_types[type].createKinddict()
-    endif
-endfunction
+    en
+endf
 
-function! s:TransformUserTypeDef(def) abort
+fu! s:TransformUserTypeDef(def) abort
     let newdef = copy(a:def)
 
     if has_key(a:def, 'kinds')
@@ -296,7 +296,7 @@ function! s:TransformUserTypeDef(def) abort
             let kinddict.stl  = get(kindlist, 3, 1)
             call add(newdef.kinds, kinddict)
         endfor
-    endif
+    en
 
     if has_key(a:def, 'kind2scope') && !has_key(a:def, 'scope2kind')
         let newdef.scope2kind = {}
@@ -308,24 +308,24 @@ function! s:TransformUserTypeDef(def) abort
         for [key, value] in items(a:def.scope2kind)
             let newdef.kind2scope[value] = key
         endfor
-    endif
+    en
 
     return newdef
-endfunction
+endf
 
-function! s:RestoreSession() abort
+fu! s:RestoreSession() abort
     let curfile = fnamemodify(bufname('%'), ':p')
 
     let tagbarwinnr = bufwinnr(s:TagbarBufName())
     if tagbarwinnr == -1
         return
-    else
+    el
         let in_tagbar = 1
         if winnr() != tagbarwinnr
             call s:goto_win(tagbarwinnr)
             let in_tagbar = 0
-        endif
-    endif
+        en
+    en
 
     let s:last_autofocus = 0
 
@@ -335,14 +335,14 @@ function! s:RestoreSession() abort
 
     if !in_tagbar
         call s:goto_win('p')
-    endif
-endfunction
+    en
+endf
 
-function! s:MapKeys() abort
-    nnoremap <script> <silent> <buffer> <2-LeftMouse>:call <SID>JumpToTag(0)<CR>
-    nnoremap <script> <silent> <buffer> <LeftRelease> <LeftRelease>:call <SID>CheckMouseClick()<CR>
-    inoremap <script> <silent> <buffer> <2-LeftMouse> <C-o>:call <SID>JumpToTag(0)<CR>
-    inoremap <script> <silent> <buffer> <LeftRelease> <LeftRelease><C-o>:call <SID>CheckMouseClick()<CR>
+fu! s:MapKeys() abort
+    nn <script> <silent> <buffer> <2-LeftMouse>:call <SID>JumpToTag(0)<CR>
+    nn <script> <silent> <buffer> <LeftRelease> <LeftRelease>:call <SID>CheckMouseClick()<CR>
+    ino <script> <silent> <buffer> <2-LeftMouse> <C-o>:call <SID>JumpToTag(0)<CR>
+    ino <script> <silent> <buffer> <LeftRelease> <LeftRelease><C-o>:call <SID>CheckMouseClick()<CR>
 
     let maps = [
         \ ['jump',          'JumpToTag(0)'],
@@ -372,60 +372,59 @@ function! s:MapKeys() abort
     let map_options = ' <script> <silent> <buffer> '
     if v:version > 703 || (v:version == 703 && has('patch1261'))
         let map_options .= ' <nowait> '
-    endif
+    en
 
     for [map, func] in maps
         let def = get(g:, 'tagbar_map_' . map)
         if type(def) == type("")
             let keys = [def]
-        else
+        el
             let keys = def
-        endif
+        en
         for key in keys
-            execute 'nnoremap' . map_options . key .
+            exe 'nnoremap' . map_options . key .
                         \ ' :call <SID>' . func . '<CR>'
         endfor
         unlet def
     endfor
 
     let b:tagbar_mapped_keys = 1
-endfunction
+endf
 
-function! s:CreateAutocommands() abort
-    augroup TagbarAutoCmds
-        autocmd!
-
+fu! s:CreateAutocommands() abort
+    aug TagbarAutoCmds
+        au!
         if !g:tagbar_silent
-            autocmd CursorHold __Tagbar__.* call s:ShowPrototype(1)
-        endif
-        autocmd WinEnter   __Tagbar__.* call s:SetStatusLine()
-        autocmd WinLeave   __Tagbar__.* call s:SetStatusLine()
+            au CursorHold __Tagbar__.* call s:ShowPrototype(1)
+        en
+        au WinEnter   __Tagbar__.* call s:SetStatusLine()
+        au WinLeave   __Tagbar__.* call s:SetStatusLine()
 
         if g:tagbar_autopreview
-            autocmd CursorMoved __Tagbar__.* nested call s:ShowInPreviewWin()
-        endif
+            au CursorMoved __Tagbar__.* nested call s:ShowInPreviewWin()
+        en
 
-        autocmd BufEnter * if expand('<amatch>') !~ '__Tagbar__.*' | let s:last_alt_bufnr = bufnr('#') | endif
+        au BufEnter * if expand('<amatch>') !~ '__Tagbar__.*' | let s:last_alt_bufnr = bufnr('#') | en
         if exists('##QuitPre')
-            autocmd QuitPre * let s:vim_quitting = 1
-        endif
-        autocmd WinEnter * nested call s:HandleOnlyWindow()
-        autocmd WinEnter * if bufwinnr(s:TagbarBufName()) == -1 | call s:ShrinkIfExpanded() | endif
+            au QuitPre * let s:vim_quitting = 1
+        en
+        au WinEnter * nested call s:HandleOnlyWindow()
+        au WinEnter * if bufwinnr(s:TagbarBufName()) == -1 | call s:ShrinkIfExpanded() | en
 
-        autocmd BufWritePost * call s:AutoUpdate(fnamemodify(expand('<afile>'), ':p'), 1)
-        autocmd BufReadPost,BufEnter,CursorHold,FileType * call s:AutoUpdate(fnamemodify(expand('<afile>'), ':p'), 0)
-        autocmd BufDelete,BufWipeout * nested call s:HandleBufDelete(expand('<afile>'), expand('<abuf>'))
+        au BufWritePost * call s:AutoUpdate(fnamemodify(expand('<afile>'), ':p'), 1)
+        au BufReadPost,BufEnter,CursorHold,FileType * call s:AutoUpdate(fnamemodify(expand('<afile>'), ':p'), 0)
+        au BufDelete,BufWipeout * nested call s:HandleBufDelete(expand('<afile>'), expand('<abuf>'))
 
-        autocmd QuickFixCmdPre  *grep* let s:tagbar_qf_active = 1
-        autocmd QuickFixCmdPost *grep* if exists('s:tagbar_qf_active') | unlet s:tagbar_qf_active | endif
+        au QuickFixCmdPre  *grep* let s:tagbar_qf_active = 1
+        au QuickFixCmdPost *grep* if exists('s:tagbar_qf_active') | unlet s:tagbar_qf_active | en
 
-        autocmd VimEnter * call s:CorrectFocusOnStartup()
-    augroup END
+        au VimEnter * call s:CorrectFocusOnStartup()
+    aug END
 
     let s:autocommands_done = 1
-endfunction
+endf
 
-function! s:CheckForExCtags(silent) abort
+fu! s:CheckForExCtags(silent) abort
     if !exists('g:tagbar_ctags_bin')
         let ctagsbins  = []
         let ctagsbins += ['ctags-exuberant'] " Debian
@@ -441,7 +440,7 @@ function! s:CheckForExCtags(silent) abort
             if executable(ctags)
                 let g:tagbar_ctags_bin = ctags
                 break
-            endif
+            en
         endfor
         if !exists('g:tagbar_ctags_bin')
             let errmsg = 'Tagbar: Exuberant ctags not found!'
@@ -451,8 +450,8 @@ function! s:CheckForExCtags(silent) abort
             call s:CtagsErrMsg(errmsg, infomsg, a:silent)
             let s:checked_ctags = 2
             return 0
-        endif
-    else
+        en
+    el
         let wildignore_save = &wildignore
         set wildignore&
 
@@ -466,14 +465,14 @@ function! s:CheckForExCtags(silent) abort
             call s:CtagsErrMsg(errmsg, infomsg, a:silent)
             let s:checked_ctags = 2
             return 0
-        endif
-    endif
+        en
+    en
 
     let ctags_cmd = s:EscapeCtagsCmd(g:tagbar_ctags_bin, '--version')
     if ctags_cmd == ''
         let s:checked_ctags = 2
         return 0
-    endif
+    en
 
     let ctags_output = s:ExecuteCtags(ctags_cmd)
 
@@ -493,112 +492,112 @@ function! s:CheckForExCtags(silent) abort
         call s:CtagsErrMsg(errmsg, infomsg, a:silent, ctags_cmd, ctags_output)
         let s:checked_ctags = 2
         return 0
-    else
+    el
         let s:checked_ctags = 1
         return 1
-    endif
-endfunction
+    en
+endf
 
-function! s:CtagsErrMsg(errmsg, infomsg, silent, ...) abort
+fu! s:CtagsErrMsg(errmsg, infomsg, silent, ...) abort
     let ctags_cmd    = a:0 > 0 ? a:1 : ''
     let ctags_output = a:0 > 1 ? a:2 : ''
 
     let exit_code_set = a:0 > 2
     if exit_code_set
         let exit_code = a:3
-    endif
+    en
 
     if !a:silent
         call s:warning(a:errmsg)
-        echomsg a:infomsg
+        echom a:infomsg
 
         if ctags_cmd == ''
             return
-        endif
+        en
 
-        echomsg 'Executed command: "' . ctags_cmd . '"'
+        echom 'Executed command: "' . ctags_cmd . '"'
         if ctags_output != ''
-            echomsg 'Command output:'
+            echom 'Command output:'
             for line in split(ctags_output, '\n')
-                echomsg line
+                echom line
             endfor
-        else
-            echomsg 'Command output is empty.'
-        endif
+        el
+            echom 'Command output is empty.'
+        en
         if exit_code_set
-            echomsg 'Exit code: ' . exit_code
-        endif
-    endif
-endfunction
+            echom 'Exit code: ' . exit_code
+        en
+    en
+endf
 
-function! s:CheckExCtagsVersion(output) abort
+fu! s:CheckExCtagsVersion(output) abort
     if a:output =~ 'Universal Ctags'
         let s:ctags_is_uctags = 1
         return 1
-    endif
+    en
 
     if a:output =~ 'Exuberant Ctags Development'
         return 1
-    endif
+    en
 
     let matchlist = matchlist(a:output, '\vExuberant Ctags (\d+)\.(\d+)')
     let major     = matchlist[1]
     let minor     = matchlist[2]
 
     return major >= 6 || (major == 5 && minor >= 5)
-endfunction
+endf
 
-function! s:CheckFTCtags(bin, ftype) abort
+fu! s:CheckFTCtags(bin, ftype) abort
     if executable(a:bin)
         return a:bin
-    endif
+    en
 
     if exists('g:tagbar_type_' . a:ftype)
         let userdef = g:tagbar_type_{a:ftype}
         if has_key(userdef, 'ctagsbin')
             return userdef.ctagsbin
-        else
+        el
             return ''
-        endif
-    endif
+        en
+    en
 
     return ''
-endfunction
+endf
 
-function! s:GetSupportedFiletypes() abort
+fu! s:GetSupportedFiletypes() abort
     let ctags_cmd = s:EscapeCtagsCmd(g:tagbar_ctags_bin, '--list-languages')
     if ctags_cmd == ''
         return
-    endif
+    en
 
     let ctags_output = s:ExecuteCtags(ctags_cmd)
 
     if v:shell_error
         return
-    endif
+    en
 
     let types = split(ctags_output, '\n\+')
 
     for type in types
         if match(type, '\[disabled\]') == -1
             let s:ctags_types[tolower(type)] = 1
-        endif
+        en
     endfor
 
     let s:checked_ctags_types = 1
-endfunction
+endf
 
 let s:BaseTag = {}
 
-function! s:BaseTag.New(name) abort dict
+fu! s:BaseTag.New(name) abort dict
     let newobj = copy(self)
 
     call newobj._init(a:name)
 
     return newobj
-endfunction
+endf
 
-function! s:BaseTag._init(name) abort dict
+fu! s:BaseTag._init(name) abort dict
     let self.name          = a:name
     let self.fields        = {}
     let self.fields.line   = 0
@@ -611,50 +610,50 @@ function! s:BaseTag._init(name) abort dict
     let self.tline         = -1
     let self.fileinfo      = {}
     let self.typeinfo      = {}
-endfunction
+endf
 
-function! s:BaseTag.isNormalTag() abort dict
+fu! s:BaseTag.isNormalTag() abort dict
     return 0
-endfunction
+endf
 
-function! s:BaseTag.isPseudoTag() abort dict
+fu! s:BaseTag.isPseudoTag() abort dict
     return 0
-endfunction
+endf
 
-function! s:BaseTag.isKindheader() abort dict
+fu! s:BaseTag.isKindheader() abort dict
     return 0
-endfunction
+endf
 
-function! s:BaseTag.getPrototype(short) abort dict
+fu! s:BaseTag.getPrototype(short) abort dict
     return self.prototype
-endfunction
+endf
 
-function! s:BaseTag._getPrefix() abort dict
+fu! s:BaseTag._getPrefix() abort dict
     let fileinfo = self.fileinfo
 
     if has_key(self, 'children') && !empty(self.children)
         if fileinfo.tagfolds[self.fields.kind][self.fullpath]
             let prefix = s:icon_closed
-        else
+        el
             let prefix = s:icon_open
-        endif
-    else
+        en
+    el
         let prefix = ' '
-    endif
+    en
     if g:tagbar_show_visibility
         if has_key(self.fields, 'access')
             let prefix .= get(s:visibility_symbols, self.fields.access, ' ')
         elseif has_key(self.fields, 'file')
             let prefix .= s:visibility_symbols.private
-        else
+        el
             let prefix .= ' '
-        endif
-    endif
+        en
+    en
 
     return prefix
-endfunction
+endf
 
-function! s:BaseTag.initFoldState() abort dict
+fu! s:BaseTag.initFoldState() abort dict
     let fileinfo = self.fileinfo
 
     if s:known_files.has(fileinfo.fpath) &&
@@ -663,45 +662,45 @@ function! s:BaseTag.initFoldState() abort dict
         let fileinfo.tagfolds[self.fields.kind][self.fullpath] = fileinfo._tagfolds_old[self.fields.kind][self.fullpath]
     elseif self.depth >= fileinfo.foldlevel
         let fileinfo.tagfolds[self.fields.kind][self.fullpath] = 1
-    else
+    el
         let fileinfo.tagfolds[self.fields.kind][self.fullpath] = fileinfo.kindfolds[self.fields.kind]
-    endif
-endfunction
+    en
+endf
 
-function! s:BaseTag.getClosedParentTline() abort dict
+fu! s:BaseTag.getClosedParentTline() abort dict
     let tagline  = self.tline
 
     let parents   = []
     let curparent = self.parent
-    while !empty(curparent)
+    wh !empty(curparent)
         call add(parents, curparent)
         let curparent = curparent.parent
-    endwhile
+    endw
     for parent in reverse(parents)
         if parent.isFolded()
             let tagline = parent.tline
             break
-        endif
+        en
     endfor
 
     return tagline
-endfunction
+endf
 
-function! s:BaseTag.isFoldable() abort dict
+fu! s:BaseTag.isFoldable() abort dict
     return has_key(self, 'children') && !empty(self.children)
-endfunction
+endf
 
-function! s:BaseTag.isFolded() abort dict
+fu! s:BaseTag.isFolded() abort dict
     return self.fileinfo.tagfolds[self.fields.kind][self.fullpath]
-endfunction
+endf
 
-function! s:BaseTag.openFold() abort dict
+fu! s:BaseTag.openFold() abort dict
     if self.isFoldable()
         let self.fileinfo.tagfolds[self.fields.kind][self.fullpath] = 0
-    endif
-endfunction
+    en
+endf
 
-function! s:BaseTag.closeFold() abort dict
+fu! s:BaseTag.closeFold() abort dict
     let newline = line('.')
 
     if !empty(self.parent) && self.parent.isKindheader()
@@ -714,31 +713,31 @@ function! s:BaseTag.closeFold() abort dict
         let parent = self.parent
         let self.fileinfo.tagfolds[parent.fields.kind][parent.fullpath] = 1
         let newline = parent.tline
-    endif
+    en
 
     return newline
-endfunction
+endf
 
-function! s:BaseTag.setFolded(folded) abort dict
+fu! s:BaseTag.setFolded(folded) abort dict
     let self.fileinfo.tagfolds[self.fields.kind][self.fullpath] = a:folded
-endfunction
+endf
 
-function! s:BaseTag.openParents() abort dict
+fu! s:BaseTag.openParents() abort dict
     let parent = self.parent
 
-    while !empty(parent)
+    wh !empty(parent)
         call parent.openFold()
         let parent = parent.parent
-    endwhile
-endfunction
+    endw
+endf
 
 let s:NormalTag = copy(s:BaseTag)
 
-function! s:NormalTag.isNormalTag() abort dict
+fu! s:NormalTag.isNormalTag() abort dict
     return 1
-endfunction
+endf
 
-function! s:NormalTag.strfmt() abort dict
+fu! s:NormalTag.strfmt() abort dict
     let typeinfo = self.typeinfo
 
     let suffix = get(self.fields, 'signature', '')
@@ -746,38 +745,38 @@ function! s:NormalTag.strfmt() abort dict
         let suffix .= ' : ' . self.fields.type
     elseif has_key(typeinfo, 'kind2scope') && has_key(typeinfo.kind2scope, self.fields.kind)
         let suffix .= ' : ' . typeinfo.kind2scope[self.fields.kind]
-    endif
+    en
 
     return self._getPrefix() . self.name . suffix . "\n"
-endfunction
+endf
 
-function! s:NormalTag.str(longsig, full) abort dict
+fu! s:NormalTag.str(longsig, full) abort dict
     if a:full && self.path != ''
         let str = self.path . self.typeinfo.sro . self.name
-    else
+    el
         let str = self.name
-    endif
+    en
 
     if has_key(self.fields, 'signature')
         if a:longsig
             let str .= self.fields.signature
-        else
+        el
             let str .= '()'
-        endif
-    endif
+        en
+    en
 
     return str
-endfunction
+endf
 
-function! s:NormalTag.getPrototype(short) abort dict
+fu! s:NormalTag.getPrototype(short) abort dict
     if self.prototype != ''
         let prototype = self.prototype
-    else
+    el
         let bufnr = self.fileinfo.bufnr
 
         if self.fields.line == 0 || !bufloaded(bufnr)
             return substitute(self.pattern, '^\\V\\^\\C\s*\(.*\)\\$$', '\1', '')
-        endif
+        en
 
         let line = getbufline(bufnr, self.fields.line)[0]
         let list = split(line, '\zs')
@@ -785,29 +784,29 @@ function! s:NormalTag.getPrototype(short) abort dict
         let start = index(list, '(')
         if start == -1
             return substitute(line, '^\s\+', '', '')
-        endif
+        en
 
         let opening = count(list, '(', 0, start)
         let closing = count(list, ')', 0, start)
         if closing >= opening
             return substitute(line, '^\s\+', '', '')
-        endif
+        en
 
         let balance = opening - closing
 
         let prototype = line
         let curlinenr = self.fields.line + 1
-        while balance > 0
+        wh balance > 0
             let curline = getbufline(bufnr, curlinenr)[0]
             let curlist = split(curline, '\zs')
             let balance += count(curlist, '(')
             let balance -= count(curlist, ')')
             let prototype .= "\n" . curline
             let curlinenr += 1
-        endwhile
+        endw
 
         let self.prototype = prototype
-    endif
+    en
 
     if a:short
         let prototype = substitute(prototype, '^\s\+', '', '')
@@ -818,90 +817,90 @@ function! s:NormalTag.getPrototype(short) abort dict
         if len(prototype) > maxlen
             let prototype = prototype[:maxlen - 1 - 3]
             let prototype .= '...'
-        endif
-    endif
+        en
+    en
 
     return prototype
-endfunction
+endf
 
 let s:PseudoTag = copy(s:BaseTag)
 
-function! s:PseudoTag.isPseudoTag() abort dict
+fu! s:PseudoTag.isPseudoTag() abort dict
     return 1
-endfunction
+endf
 
-function! s:PseudoTag.strfmt() abort dict
+fu! s:PseudoTag.strfmt() abort dict
     let typeinfo = self.typeinfo
 
     let suffix = get(self.fields, 'signature', '')
     if has_key(typeinfo.kind2scope, self.fields.kind)
         let suffix .= ' : ' . typeinfo.kind2scope[self.fields.kind]
-    endif
+    en
 
     return self._getPrefix() . self.name . '*' . suffix
-endfunction
+endf
 
 let s:KindheaderTag = copy(s:BaseTag)
 
-function! s:KindheaderTag.isKindheader() abort dict
+fu! s:KindheaderTag.isKindheader() abort dict
     return 1
-endfunction
+endf
 
-function! s:KindheaderTag.getPrototype(short) abort dict
+fu! s:KindheaderTag.getPrototype(short) abort dict
     return self.name . ': ' . self.numtags . ' ' . (self.numtags > 1 ? 'tags' : 'tag')
-endfunction
+endf
 
-function! s:KindheaderTag.isFoldable() abort dict
+fu! s:KindheaderTag.isFoldable() abort dict
     return 1
-endfunction
+endf
 
-function! s:KindheaderTag.isFolded() abort dict
+fu! s:KindheaderTag.isFolded() abort dict
     return self.fileinfo.kindfolds[self.short]
-endfunction
+endf
 
-function! s:KindheaderTag.openFold() abort dict
+fu! s:KindheaderTag.openFold() abort dict
     let self.fileinfo.kindfolds[self.short] = 0
-endfunction
+endf
 
-function! s:KindheaderTag.closeFold() abort dict
+fu! s:KindheaderTag.closeFold() abort dict
     let self.fileinfo.kindfolds[self.short] = 1
     return line('.')
-endfunction
+endf
 
-function! s:KindheaderTag.toggleFold() abort dict
+fu! s:KindheaderTag.toggleFold() abort dict
     let fileinfo = s:TagbarState().getCurrent(0)
     let fileinfo.kindfolds[self.short] = !fileinfo.kindfolds[self.short]
-endfunction
+endf
 
 let s:TypeInfo = {}
 
-function! s:TypeInfo.New(...) abort dict
+fu! s:TypeInfo.New(...) abort dict
     let newobj = copy(self)
     let newobj.kinddict = {}
 
     if a:0 > 0
         call extend(newobj, a:1)
-    endif
+    en
 
     return newobj
-endfunction
+endf
 
-function! s:TypeInfo.getKind(kind) abort dict
+fu! s:TypeInfo.getKind(kind) abort dict
     let idx = self.kinddict[a:kind]
     return self.kinds[idx]
-endfunction
+endf
 
-function! s:TypeInfo.createKinddict() abort dict
+fu! s:TypeInfo.createKinddict() abort dict
     let i = 0
     for kind in self.kinds
         let self.kinddict[kind.short] = i
         let i += 1
     endfor
-endfunction
+endf
 
 let s:FileInfo = {}
 
-function! s:FileInfo.New(fname, ftype, typeinfo) abort dict
+fu! s:FileInfo.New(fname, ftype, typeinfo) abort dict
     let newobj = copy(self)
     let newobj.fpath = a:fname
     let newobj.bufnr = bufnr(a:fname)
@@ -924,9 +923,9 @@ function! s:FileInfo.New(fname, ftype, typeinfo) abort dict
     let newobj.foldlevel = g:tagbar_foldlevel
 
     return newobj
-endfunction
+endf
 
-function! s:FileInfo.reset() abort dict
+fu! s:FileInfo.reset() abort dict
     let self.mtime = getftime(self.fpath)
     let self.tags  = []
     let self.fline = {}
@@ -938,88 +937,88 @@ function! s:FileInfo.reset() abort dict
     for kind in self.typeinfo.kinds
         let self.tagfolds[kind.short] = {}
     endfor
-endfunction
+endf
 
-function! s:FileInfo.clearOldFolds() abort dict
+fu! s:FileInfo.clearOldFolds() abort dict
     if exists('self._tagfolds_old')
         unlet self._tagfolds_old
-    endif
-endfunction
+    en
+endf
 
-function! s:FileInfo.sortTags() abort dict
+fu! s:FileInfo.sortTags() abort dict
     if get(s:compare_typeinfo, 'sort', g:tagbar_sort)
         call s:SortTags(self.tags, 's:CompareByKind')
-    else
+    el
         call s:SortTags(self.tags, 's:CompareByLine')
-    endif
-endfunction
+    en
+endf
 
-function! s:FileInfo.openKindFold(kind) abort dict
+fu! s:FileInfo.openKindFold(kind) abort dict
     let self.kindfolds[a:kind.short] = 0
-endfunction
+endf
 
-function! s:FileInfo.closeKindFold(kind) abort dict
+fu! s:FileInfo.closeKindFold(kind) abort dict
     let self.kindfolds[a:kind.short] = 1
-endfunction
+endf
 
 let s:state = {'_current': {}, '_paused': {}}
 
-function! s:state.New() abort dict
+fu! s:state.New() abort dict
     return deepcopy(self)
-endfunction
+endf
 
-function! s:state.getCurrent(forcecurrent) abort dict
+fu! s:state.getCurrent(forcecurrent) abort dict
     if !s:paused || a:forcecurrent
         return self._current
-    else
+    el
         return self._paused
-    endif
-endfunction
+    en
+endf
 
-function! s:state.setCurrent(fileinfo) abort dict
+fu! s:state.setCurrent(fileinfo) abort dict
     let self._current = a:fileinfo
-endfunction
+endf
 
-function! s:state.setPaused() abort dict
+fu! s:state.setPaused() abort dict
     let self._paused = self._current
-endfunction
+endf
 
 let s:known_files = {'_files': {}}
 
-function! s:known_files.get(fname) abort dict
+fu! s:known_files.get(fname) abort dict
     return get(self._files, a:fname, {})
-endfunction
+endf
 
-function! s:known_files.put(fileinfo, ...) abort dict
+fu! s:known_files.put(fileinfo, ...) abort dict
     if a:0 == 1
         let self._files[a:1] = a:fileinfo
-    else
+    el
         let fname = a:fileinfo.fpath
         let self._files[fname] = a:fileinfo
-    endif
-endfunction
+    en
+endf
 
-function! s:known_files.has(fname) abort dict
+fu! s:known_files.has(fname) abort dict
     return has_key(self._files, a:fname)
-endfunction
+endf
 
-function! s:known_files.rm(fname) abort dict
+fu! s:known_files.rm(fname) abort dict
     if s:known_files.has(a:fname)
         call remove(self._files, a:fname)
-    endif
-endfunction
+    en
+endf
 
-function! s:ToggleWindow(flags) abort
+fu! s:ToggleWindow(flags) abort
     let tagbarwinnr = bufwinnr(s:TagbarBufName())
     if tagbarwinnr != -1
         call s:CloseWindow()
         return
-    endif
+    en
 
     call s:OpenWindow(a:flags)
-endfunction
+endf
 
-function! s:OpenWindow(flags) abort
+fu! s:OpenWindow(flags) abort
     let autofocus = a:flags =~# 'f'
     let jump      = a:flags =~# 'j'
     let autoclose = a:flags =~# 'c'
@@ -1032,9 +1031,9 @@ function! s:OpenWindow(flags) abort
         if winnr() != tagbarwinnr && jump
             call s:goto_win(tagbarwinnr)
             call s:HighlightTag(g:tagbar_autoshowtag != 2, 1, curline)
-        endif
+        en
         return
-    endif
+    en
 
     if exists('*win_getid')
         let prevwinid = win_getid()
@@ -1042,21 +1041,21 @@ function! s:OpenWindow(flags) abort
             call s:goto_win('p', 1)
             let pprevwinid = win_getid()
             call s:goto_win('p', 1)
-        endif
-    else
+        en
+    el
         let prevwinnr = winnr()
         if winnr('$') > 1
             call s:goto_win('p', 1)
             let pprevwinnr = winnr()
             call s:goto_win('p', 1)
-        endif
-    endif
+        en
+    en
 
     let s:last_autofocus = autofocus
 
     if !s:Init(0)
         return 0
-    endif
+    en
 
     if g:tagbar_expand >= 1 && !s:window_expanded && (has('gui_running') || g:tagbar_expand == 2)
         let s:window_pos.pre.x = getwinposx()
@@ -1065,18 +1064,18 @@ function! s:OpenWindow(flags) abort
         let s:window_pos.post.x = getwinposx()
         let s:window_pos.post.y = getwinposy()
         let s:window_expanded = 1
-    endif
+    en
 
     let s:window_opening = 1
     if g:tagbar_vertical == 0
         let mode = 'vertical '
         let openpos = g:tagbar_left ? 'topleft ' : 'botright '
         let width = g:tagbar_width
-    else
+    el
         let mode = ''
         let openpos = g:tagbar_left ? 'leftabove ' : 'rightbelow '
         let width = g:tagbar_vertical
-    endif
+    en
     exe 'silent keepalt ' . openpos . mode . width . 'split ' . s:TagbarBufName()
     exe 'silent ' . mode . 'resize ' . width
     unlet s:window_opening
@@ -1085,7 +1084,7 @@ function! s:OpenWindow(flags) abort
 
     if empty(s:known_files.get(curfile))
         call s:known_files.rm(curfile)
-    endif
+    en
 
     call s:AutoUpdate(curfile, 0)
     call s:HighlightTag(g:tagbar_autoshowtag != 2, 1, curline)
@@ -1094,61 +1093,61 @@ function! s:OpenWindow(flags) abort
         if exists('*win_getid')
             if exists('pprevwinid')
                 noautocmd call win_gotoid(pprevwinid)
-            endif
+            en
             call win_gotoid(prevwinid)
-        else
+        el
             if winnr() == prevwinnr || (exists('pprevwinnr') && winnr() == pprevwinnr)
                 call s:goto_win('p')
-            else
+            el
                 if exists('pprevwinnr')
                     call s:goto_win(pprevwinnr, 1)
-                endif
+                en
                 call s:goto_win(prevwinnr)
-            endif
-        endif
-    endif
-endfunction
+            en
+        en
+    en
+endf
 
-function! s:InitWindow(autoclose) abort
-    setlocal filetype=tagbar
-    setlocal noreadonly " in case the "view" mode is used
-    setlocal buftype=nofile
-    setlocal bufhidden=hide
-    setlocal noswapfile
-    setlocal nobuflisted
-    setlocal nomodifiable
-    setlocal textwidth=0
+fu! s:InitWindow(autoclose) abort
+    setl filetype=tagbar
+    setl noreadonly " in case the "view" mode is used
+    setl buftype=nofile
+    setl bufhidden=hide
+    setl noswapfile
+    setl nobuflisted
+    setl nomodifiable
+    setl textwidth=0
 
     if has('balloon_eval')
-        setlocal balloonexpr=TagbarBalloonExpr()
+        setl balloonexpr=TagbarBalloonExpr()
         set ballooneval
-    endif
+    en
 
-    setlocal nolist
-    setlocal nowrap
-    setlocal winfixwidth
-    setlocal nospell
+    setl nolist
+    setl nowrap
+    setl winfixwidth
+    setl nospell
 
     if g:tagbar_show_linenumbers == 0
-        setlocal nonumber
+        setl nonumber
         if exists('+relativenumber')
-            setlocal norelativenumber
-        endif
+            setl norelativenumber
+        en
     elseif g:tagbar_show_linenumbers == 1
-        setlocal number
+        setl number
     elseif g:tagbar_show_linenumbers == 2
-        setlocal relativenumber
-    else
+        setl relativenumber
+    el
         set number<
         if exists('+relativenumber')
             set relativenumber<
-        endif
-    endif
+        en
+    en
 
-    setlocal nofoldenable
-    setlocal foldcolumn=0
-    setlocal foldmethod&
-    setlocal foldexpr&
+    setl nofoldenable
+    setl foldcolumn=0
+    setl foldmethod&
+    setl foldexpr&
 
     let w:autoclose = a:autoclose
 
@@ -1160,25 +1159,25 @@ function! s:InitWindow(autoclose) abort
 
     if !exists('b:tagbar_mapped_keys')
         call s:MapKeys()
-    endif
+    en
 
     let &cpoptions = cpoptions_save
 
     if g:tagbar_expand
         let s:expand_bufnr = bufnr('%')
-    endif
-endfunction
+    en
+endf
 
-function! s:CloseWindow() abort
+fu! s:CloseWindow() abort
     let tagbarwinnr = bufwinnr(s:TagbarBufName())
     if tagbarwinnr == -1
         return
-    endif
+    en
 
     if s:pwin_by_tagbar
         pclose
         let tagbarwinnr = bufwinnr(s:TagbarBufName())
-    endif
+    en
 
     if winnr() == tagbarwinnr
         if winbufnr(2) != -1
@@ -1195,34 +1194,34 @@ function! s:CloseWindow() abort
                     let filewinnr = bufwinnr(filebufnr)
                     if filewinnr != -1
                         call s:goto_win(filewinnr)
-                    endif
-                endif
-            endif
-        endif
-    else
+                    en
+                en
+            en
+        en
+    el
         call s:mark_window()
         call s:goto_win(tagbarwinnr)
         close
 
         call s:goto_markedwin()
-    endif
+    en
 
     call s:ShrinkIfExpanded()
 
     if &equalalways
         wincmd =
-    endif
+    en
 
     if s:autocommands_done && !s:statusline_in_use
-        autocmd! TagbarAutoCmds
+        au! TagbarAutoCmds
         let s:autocommands_done = 0
-    endif
-endfunction
+    en
+endf
 
-function! s:ShrinkIfExpanded() abort
+fu! s:ShrinkIfExpanded() abort
     if !s:window_expanded || &filetype == 'tagbar' || s:expand_bufnr == -1
         return
-    endif
+    en
 
     let tablist = []
     for i in range(tabpagenr('$'))
@@ -1234,47 +1233,47 @@ function! s:ShrinkIfExpanded() abort
         let s:window_expanded = 0
         let s:expand_bufnr = -1
         if getwinposx() != -1 && getwinposx() == s:window_pos.post.x && getwinposy() == s:window_pos.post.y
-           execute 'winpos ' . s:window_pos.pre.x . ' ' . s:window_pos.pre.y
-        endif
-    endif
-endfunction
+           exe 'winpos ' . s:window_pos.pre.x . ' ' . s:window_pos.pre.y
+        en
+    en
+endf
 
-function! s:ZoomWindow() abort
+fu! s:ZoomWindow() abort
     if s:is_maximized
-        execute 'vertical resize ' . g:tagbar_width
-        execute s:winrestcmd
+        exe 'vertical resize ' . g:tagbar_width
+        exe s:winrestcmd
         let s:is_maximized = 0
-    else
+    el
         let s:winrestcmd = winrestcmd()
         if g:tagbar_zoomwidth == 1
             vertical resize
         elseif g:tagbar_zoomwidth == 0
             let func = exists('*strdisplaywidth') ? 'strdisplaywidth' : 'strlen'
             let maxline = max(map(getline(line('w0'), line('w$')), func . '(v:val)'))
-            execute 'vertical resize ' . maxline
+            exe 'vertical resize ' . maxline
         elseif g:tagbar_zoomwidth > 1
-            execute 'vertical resize ' . g:tagbar_zoomwidth
-        endif
+            exe 'vertical resize ' . g:tagbar_zoomwidth
+        en
         let s:is_maximized = 1
-    endif
-endfunction
+    en
+endf
 
-function! s:CorrectFocusOnStartup() abort
+fu! s:CorrectFocusOnStartup() abort
     if bufwinnr(s:TagbarBufName()) != -1 && !g:tagbar_autofocus && !s:last_autofocus
         let curfile = s:TagbarState().getCurrent(1)
         if !empty(curfile) && curfile.fpath != fnamemodify(bufname('%'), ':p')
             let winnr = bufwinnr(curfile.fpath)
             if winnr != -1
                 call s:goto_win(winnr)
-            endif
-        endif
-    endif
-endfunction
+            en
+        en
+    en
+endf
 
-function! s:ProcessFile(fname, ftype) abort
+fu! s:ProcessFile(fname, ftype) abort
     if !s:IsValidFile(a:fname, a:ftype)
         return
-    endif
+    en
 
     let typeinfo = s:known_types[a:ftype]
 
@@ -1282,22 +1281,22 @@ function! s:ProcessFile(fname, ftype) abort
         let fileinfo = s:known_files.get(a:fname)
         let typeinfo = fileinfo.typeinfo
         call fileinfo.reset()
-    else
+    el
         if exists('#TagbarProjects#User')
-            execute 'doautocmd <nomodeline> TagbarProjects User ' . a:fname
+            exe 'doautocmd <nomodeline> TagbarProjects User ' . a:fname
             if exists('b:tagbar_type')
                 let typeinfo = extend(copy(typeinfo), s:TransformUserTypeDef(b:tagbar_type))
                 call typeinfo.createKinddict()
-            endif
-        endif
+            en
+        en
         let fileinfo = s:FileInfo.New(a:fname, a:ftype, typeinfo)
-    endif
+    en
 
     let tempfile = tempname()
     let ext = fnamemodify(fileinfo.fpath, ':e')
     if ext != ''
         let tempfile .= '.' . ext
-    endif
+    en
 
     call writefile(getbufline(fileinfo.bufnr, 1, '$'), tempfile)
     let fileinfo.mtime = getftime(tempfile)
@@ -1312,13 +1311,13 @@ function! s:ProcessFile(fname, ftype) abort
     elseif ctags_output == ''
         call s:known_files.put(s:FileInfo.New(a:fname, a:ftype, s:known_types[a:ftype]), a:fname)
         return
-    endif
+    en
 
     let rawtaglist = split(ctags_output, '\n\+')
     for line in rawtaglist
         if line =~# '^!_TAG_'
             continue
-        endif
+        en
 
         let parts = split(line, ';"')
         if len(parts) == 2 " Is a valid tag line
@@ -1326,8 +1325,8 @@ function! s:ProcessFile(fname, ftype) abort
             if !empty(taginfo)
                 let fileinfo.fline[taginfo.fields.line] = taginfo
                 call add(fileinfo.tags, taginfo)
-            endif
-        endif
+            en
+        en
     endfor
 
     let processedtags = []
@@ -1344,8 +1343,8 @@ function! s:ProcessFile(fname, ftype) abort
             echoerr 'Tagbar: ''scopedtags'' not empty after processing,'
                   \ 'this should never happen!'
                   \ 'Please contact the script maintainer with an example.'
-        endif
-    endif
+        en
+    en
 
     for kind in typeinfo.kinds
 
@@ -1353,7 +1352,7 @@ function! s:ProcessFile(fname, ftype) abort
 
         if empty(curtags)
             continue
-        endif
+        en
 
         let kindtag          = s:KindheaderTag.New(kind.long)
         let kindtag.short    = kind.short
@@ -1367,7 +1366,7 @@ function! s:ProcessFile(fname, ftype) abort
 
     if !empty(processedtags)
         call extend(fileinfo.tags, processedtags)
-    endif
+    en
 
     call fileinfo.clearOldFolds()
 
@@ -1375,14 +1374,14 @@ function! s:ProcessFile(fname, ftype) abort
     call fileinfo.sortTags()
 
     call s:known_files.put(fileinfo)
-endfunction
+endf
 
-function! s:ExecuteCtagsOnFile(fname, realfname, typeinfo) abort
+fu! s:ExecuteCtagsOnFile(fname, realfname, typeinfo) abort
     if has_key(a:typeinfo, 'ctagsargs') && type(a:typeinfo.ctagsargs) == type('')
         let ctags_args = ' ' . a:typeinfo.ctagsargs . ' '
     elseif has_key(a:typeinfo, 'ctagsargs') && type(a:typeinfo.ctagsargs) == type([])
         let ctags_args = a:typeinfo.ctagsargs
-    else
+    el
         let ctags_args  = [ '-f',
                           \ '-',
                           \ '--format=2',
@@ -1396,7 +1395,7 @@ function! s:ExecuteCtagsOnFile(fname, realfname, typeinfo) abort
 
         if has_key(a:typeinfo, 'deffile')
             let ctags_args += ['--options=' . expand(a:typeinfo.deffile)]
-        endif
+        en
 
         if has_key(a:typeinfo, 'ctagstype')
             let ctags_type = a:typeinfo.ctagstype
@@ -1408,43 +1407,43 @@ function! s:ExecuteCtagsOnFile(fname, realfname, typeinfo) abort
 
             let ctags_args += ['--language-force=' . ctags_type]
             let ctags_args += ['--' . ctags_type . '-kinds=' . ctags_kinds]
-        endif
-    endif
+        en
+    en
 
     if has_key(a:typeinfo, 'ctagsbin')
         let wildignore_save = &wildignore
         set wildignore&
         let ctags_bin = expand(a:typeinfo.ctagsbin)
         let &wildignore = wildignore_save
-    else
+    el
         let ctags_bin = g:tagbar_ctags_bin
-    endif
+    en
 
     let ctags_cmd = s:EscapeCtagsCmd(ctags_bin, ctags_args, a:fname)
     if ctags_cmd == ''
         return ''
-    endif
+    en
 
     let ctags_output = s:ExecuteCtags(ctags_cmd)
 
     if v:shell_error || ctags_output =~ 'Warning: cannot open source file'
         if bufwinnr(s:TagbarBufName()) != -1 && (!s:known_files.has(a:realfname) || !empty(s:known_files.get(a:realfname)))
             call s:warning('Tagbar: Could not execute ctags for ' . a:realfname . '!')
-            echomsg 'Executed command: "' . ctags_cmd . '"'
+            echom 'Executed command: "' . ctags_cmd . '"'
             if !empty(ctags_output)
-                echomsg 'Command output:'
+                echom 'Command output:'
                 for line in split(ctags_output, '\n')
-                    echomsg line
+                    echom line
                 endfor
-            endif
-            echomsg 'Exit code: ' . v:shell_error
-        endif
+            en
+            echom 'Exit code: ' . v:shell_error
+        en
         return -1
-    endif
+    en
     return ctags_output
-endfunction
+endf
 
-function! s:ParseTagline(part1, part2, typeinfo, fileinfo) abort
+fu! s:ParseTagline(part1, part2, typeinfo, fileinfo) abort
     let basic_info  = split(a:part1, '\t')
 
     let taginfo      = s:NormalTag.New(basic_info[0])
@@ -1456,45 +1455,45 @@ function! s:ParseTagline(part1, part2, typeinfo, fileinfo) abort
     if pattern[end - 1] ==# '$'
         let end -= 1
         let dollar = '\$'
-    else
+    el
         let dollar = ''
-    endif
+    en
     let pattern         = strpart(pattern, start, end - start)
     let taginfo.pattern = '\V\^\C' . pattern . dollar
 
     let fields = split(a:part2, '^\t\|\t\ze\w\+:')
     if fields[0] !~# ':'
         let taginfo.fields.kind = remove(fields, 0)
-    endif
+    en
     for field in fields
         let delimit = stridx(field, ':')
         let key = strpart(field, 0, delimit)
         let val = substitute(strpart(field, delimit + 1), '\t', '', 'g')
         if key == "file"
             let taginfo.fields[key] = 'yes'
-        endif
+        en
         if len(val) > 0
             if key == 'line' || key == 'column'
                 let taginfo.fields[key] = str2nr(val)
-            else
+            el
                 let taginfo.fields[key] = val
-            endif
-        endif
+            en
+        en
     endfor
     if has_key(taginfo.fields, 'lineno')
         let taginfo.fields.line = str2nr(taginfo.fields.lineno)
-    endif
+    en
     if taginfo.fields.line < 0
         let taginfo.fields.line = 0
-    endif
+    en
 
     if !has_key(taginfo.fields, 'kind')
         if index(s:warnings.type, a:typeinfo.ftype) == -1
             call s:warning("No 'kind' field found for tag " . basic_info[0] . "!" . " Please read the last section of ':help tagbar-extend'.")
             call add(s:warnings.type, a:typeinfo.ftype)
-        endif
+        en
         return {}
-    endif
+    en
 
     if has_key(a:typeinfo, 'scope2kind')
         for scope in keys(a:typeinfo.scope2kind)
@@ -1504,10 +1503,10 @@ function! s:ParseTagline(part1, part2, typeinfo, fileinfo) abort
 
                 let taginfo.fullpath = taginfo.path . a:typeinfo.sro . taginfo.name
                 break
-            endif
+            en
         endfor
         let taginfo.depth = len(split(taginfo.path, '\V' . a:typeinfo.sro))
-    endif
+    en
 
     let taginfo.fileinfo = a:fileinfo
     let taginfo.typeinfo = a:typeinfo
@@ -1521,21 +1520,21 @@ function! s:ParseTagline(part1, part2, typeinfo, fileinfo) abort
                 \ ' Your ctags and Tagbar configurations are out of sync!' .
                 \ ' Please read '':help tagbar-extend''.')
             call add(s:warnings.type, a:typeinfo.ftype)
-        endif
+        en
         return {}
     endtry
 
     return taginfo
-endfunction
+endf
 
-function! s:AddScopedTags(tags, processedtags, parent, depth, typeinfo, fileinfo, maxline) abort
+fu! s:AddScopedTags(tags, processedtags, parent, depth, typeinfo, fileinfo, maxline) abort
     if !empty(a:parent)
         let curpath = a:parent.fullpath
         let pscope  = a:typeinfo.kind2scope[a:parent.fields.kind]
-    else
+    el
         let curpath = ''
         let pscope  = ''
-    endif
+    en
 
     let is_cur_tag = 'v:val.depth == a:depth'
 
@@ -1546,7 +1545,7 @@ function! s:AddScopedTags(tags, processedtags, parent, depth, typeinfo, fileinfo
         \ (v:val.path ==# curpath ? (v:val.scope ==# pscope) : 1) &&
         \ v:val.fields.line >= a:parent.fields.line &&
         \ v:val.fields.line <= a:maxline'
-    endif
+    en
 
     let curtags = filter(copy(a:tags), is_cur_tag)
 
@@ -1556,28 +1555,28 @@ function! s:AddScopedTags(tags, processedtags, parent, depth, typeinfo, fileinfo
         let realtags   = []
         let pseudotags = []
 
-        while !empty(curtags)
+        wh !empty(curtags)
             let tag = remove(curtags, 0)
 
             if tag.path != curpath
                 let pseudotag = s:ProcessPseudoTag(curtags, tag, a:parent, a:typeinfo, a:fileinfo)
 
                 call add(pseudotags, pseudotag)
-            else
+            el
                 call add(realtags, tag)
-            endif
-        endwhile
+            en
+        endw
 
         for tag in realtags
             let tag.parent = a:parent
 
             if !has_key(a:typeinfo.kind2scope, tag.fields.kind)
                 continue
-            endif
+            en
 
             if !has_key(tag, 'children')
                 let tag.children = []
-            endif
+            en
 
             let twins = filter(copy(realtags),
                              \ "v:val.fullpath ==# '" .
@@ -1587,7 +1586,7 @@ function! s:AddScopedTags(tags, processedtags, parent, depth, typeinfo, fileinfo
             for twin in twins
                 if twin.fields.line <= maxline && twin.fields.line > tag.fields.line
                     let maxline = twin.fields.line - 1
-                endif
+                en
             endfor
 
             call s:AddScopedTags(a:tags, tag.children, tag, a:depth + 1, a:typeinfo, a:fileinfo, maxline)
@@ -1598,22 +1597,22 @@ function! s:AddScopedTags(tags, processedtags, parent, depth, typeinfo, fileinfo
             call s:ProcessPseudoChildren(a:tags, tag, a:depth, a:typeinfo, a:fileinfo)
         endfor
         call extend(a:processedtags, pseudotags)
-    endif
+    en
 
     let is_grandchild = 'v:val.depth > a:depth'
 
     if !empty(curpath)
         let is_grandchild .= ' && match(v:val.path, ''\V\^\C'' . curpath . a:typeinfo.sro) == 0'
-    endif
+    en
 
     let grandchildren = filter(copy(a:tags), is_grandchild)
 
     if !empty(grandchildren)
         call s:AddScopedTags(a:tags, a:processedtags, a:parent, a:depth + 1, a:typeinfo, a:fileinfo, a:maxline)
-    endif
-endfunction
+    en
+endf
 
-function! s:ProcessPseudoTag(curtags, tag, parent, typeinfo, fileinfo) abort
+fu! s:ProcessPseudoTag(curtags, tag, parent, typeinfo, fileinfo) abort
     let curpath = !empty(a:parent) ? a:parent.fullpath : ''
 
     let pseudoname = substitute(a:tag.path, curpath, '', '')
@@ -1626,22 +1625,22 @@ function! s:ProcessPseudoTag(curtags, tag, parent, typeinfo, fileinfo) abort
     if !empty(pseudochildren)
         call filter(a:curtags, '!(' . ispseudochild . ')')
         call extend(pseudotag.children, pseudochildren)
-    endif
+    en
 
     return pseudotag
-endfunction
+endf
 
-function! s:ProcessPseudoChildren(tags, tag, depth, typeinfo, fileinfo) abort
+fu! s:ProcessPseudoChildren(tags, tag, depth, typeinfo, fileinfo) abort
     for childtag in a:tag.children
         let childtag.parent = a:tag
 
         if !has_key(a:typeinfo.kind2scope, childtag.fields.kind)
             continue
-        endif
+        en
 
         if !has_key(childtag, 'children')
             let childtag.children = []
-        endif
+        en
 
         call s:AddScopedTags(a:tags, childtag.children, childtag, a:depth + 1, a:typeinfo, a:fileinfo, line('$'))
     endfor
@@ -1652,17 +1651,17 @@ function! s:ProcessPseudoChildren(tags, tag, depth, typeinfo, fileinfo) abort
     let grandchildren = filter(copy(a:tags), is_grandchild)
     if !empty(grandchildren)
         call s:AddScopedTags(a:tags, a:tag.children, a:tag, a:depth + 1, a:typeinfo, a:fileinfo, line('$'))
-    endif
-endfunction
+    en
+endf
 
-function! s:CreatePseudoTag(name, parent, scope, typeinfo, fileinfo) abort
+fu! s:CreatePseudoTag(name, parent, scope, typeinfo, fileinfo) abort
     if !empty(a:parent)
         let curpath = a:parent.fullpath
         let pscope  = a:typeinfo.kind2scope[a:parent.fields.kind]
-    else
+    el
         let curpath = ''
         let pscope  = ''
-    endif
+    en
 
     let pseudotag             = s:PseudoTag.New(a:name)
     let pseudotag.fields.kind = a:typeinfo.scope2kind[a:scope]
@@ -1675,7 +1674,7 @@ function! s:CreatePseudoTag(name, parent, scope, typeinfo, fileinfo) abort
         let pseudotag.scope    = pscope
         let pseudotag.path     = parentscope
         let pseudotag.fullpath = pseudotag.path . a:typeinfo.sro . pseudotag.name
-    endif
+    en
     let pseudotag.depth = len(split(pseudotag.path, '\V' . a:typeinfo.sro))
 
     let pseudotag.parent = a:parent
@@ -1686,55 +1685,55 @@ function! s:CreatePseudoTag(name, parent, scope, typeinfo, fileinfo) abort
     call pseudotag.initFoldState()
 
     return pseudotag
-endfunction
+endf
 
-function! s:SortTags(tags, comparemethod) abort
+fu! s:SortTags(tags, comparemethod) abort
     call sort(a:tags, a:comparemethod)
 
     for tag in a:tags
         if has_key(tag, 'children')
             call s:SortTags(tag.children, a:comparemethod)
-        endif
+        en
     endfor
-endfunction
+endf
 
-function! s:CompareByKind(tag1, tag2) abort
+fu! s:CompareByKind(tag1, tag2) abort
     let typeinfo = s:compare_typeinfo
 
     if typeinfo.kinddict[a:tag1.fields.kind] <# typeinfo.kinddict[a:tag2.fields.kind]
         return -1
     elseif typeinfo.kinddict[a:tag1.fields.kind] ># typeinfo.kinddict[a:tag2.fields.kind]
         return 1
-    else
+    el
         if a:tag1.name[0] ==# '~'
             let name1 = a:tag1.name[1:]
-        else
+        el
             let name1 = a:tag1.name
-        endif
+        en
         if a:tag2.name[0] ==# '~'
             let name2 = a:tag2.name[1:]
-        else
+        el
             let name2 = a:tag2.name
-        endif
+        en
 
         let ci = g:tagbar_case_insensitive
         if (((!ci) && (name1 <=# name2)) || (ci && (name1 <=? name2)))
             return -1
-        else
+        el
             return 1
-        endif
-    endif
-endfunction
+        en
+    en
+endf
 
-function! s:CompareByLine(tag1, tag2) abort
+fu! s:CompareByLine(tag1, tag2) abort
     return a:tag1.fields.line - a:tag2.fields.line
-endfunction
+endf
 
-function! s:ToggleSort() abort
+fu! s:ToggleSort() abort
     let fileinfo = s:TagbarState().getCurrent(0)
     if empty(fileinfo)
         return
-    endif
+    en
 
     let curline = line('.')
     let taginfo = s:GetTagInfo(curline, 0)
@@ -1745,9 +1744,9 @@ function! s:ToggleSort() abort
 
     if has_key(s:compare_typeinfo, 'sort')
         let s:compare_typeinfo.sort = !s:compare_typeinfo.sort
-    else
+    el
         let g:tagbar_sort = !g:tagbar_sort
-    endif
+    en
 
     call fileinfo.sortTags()
 
@@ -1756,49 +1755,49 @@ function! s:ToggleSort() abort
 
     if !empty(taginfo)
         execute taginfo.tline
-    else
+    el
         execute curline
-    endif
-endfunction
+    en
+endf
 
-function! s:RenderContent(...) abort
+fu! s:RenderContent(...) abort
     let s:new_window = 0
 
     if a:0 == 1
         let fileinfo = a:1
-    else
+    el
         let fileinfo = s:TagbarState().getCurrent(0)
-    endif
+    en
 
     if empty(fileinfo)
         return
-    endif
+    en
 
     let tagbarwinnr = bufwinnr(s:TagbarBufName())
 
     if &filetype == 'tagbar'
         let in_tagbar = 1
-    else
+    el
         let in_tagbar = 0
         let prevwinnr = winnr()
 
         call s:goto_win('p', 1)
         let pprevwinnr = winnr()
         call s:goto_win(tagbarwinnr, 1)
-    endif
+    en
 
     if !empty(s:TagbarState().getCurrent(0)) && fileinfo.fpath ==# s:TagbarState().getCurrent(0).fpath
         let saveline = line('.')
         let savecol  = col('.')
         let topline  = line('w0')
-    endif
+    en
 
     let lazyredraw_save = &lazyredraw
     set lazyredraw
     let eventignore_save = &eventignore
     set eventignore=all
 
-    setlocal modifiable
+    setl modifiable
 
     silent %delete _
 
@@ -1808,23 +1807,23 @@ function! s:RenderContent(...) abort
 
     if !empty(fileinfo.tags)
         call s:PrintKinds(typeinfo, fileinfo)
-    else
+    el
         if g:tagbar_compact && s:short_help
             silent 0put ='\" No tags found.'
-        else
+        el
             silent  put ='\" No tags found.'
-        endif
-    endif
+        en
+    en
 
     for linenr in range(line('$'), 1, -1)
         if getline(linenr) =~ '^$'
             execute 'silent ' . linenr . 'delete _'
-        else
+        el
             break
-        endif
+        en
     endfor
 
-    setlocal nomodifiable
+    setl nomodifiable
 
     if !empty(s:TagbarState().getCurrent(0)) && fileinfo.fpath ==# s:TagbarState().getCurrent(0).fpath
         let scrolloff_save = &scrolloff
@@ -1835,12 +1834,12 @@ function! s:RenderContent(...) abort
         call cursor(saveline, savecol)
 
         let &scrolloff = scrolloff_save
-    else
+    el
         execute 1
         call winline()
 
         let s:last_highlight_tline = 0
-    endif
+    en
 
     let &lazyredraw  = lazyredraw_save
     let &eventignore = eventignore_save
@@ -1848,10 +1847,10 @@ function! s:RenderContent(...) abort
     if !in_tagbar
         call s:goto_win(pprevwinnr, 1)
         call s:goto_win(prevwinnr, 1)
-    endif
-endfunction
+    en
+endf
 
-function! s:PrintKinds(typeinfo, fileinfo) abort
+fu! s:PrintKinds(typeinfo, fileinfo) abort
     let is_first_tag = 1
 
     for kind in a:typeinfo.kinds
@@ -1859,7 +1858,7 @@ function! s:PrintKinds(typeinfo, fileinfo) abort
 
         if empty(curtags)
             continue
-        endif
+        en
 
         if has_key(a:typeinfo, 'kind2scope') && has_key(a:typeinfo.kind2scope, kind.short)
             for tag in curtags
@@ -1867,25 +1866,25 @@ function! s:PrintKinds(typeinfo, fileinfo) abort
 
                 if !g:tagbar_compact
                     silent put _
-                endif
+                en
 
                 let is_first_tag = 0
             endfor
-        else
+        el
             let kindtag = curtags[0].parent
 
             if kindtag.isFolded()
                 let foldmarker = s:icon_closed
-            else
+            el
                 let foldmarker = s:icon_open
-            endif
+            en
 
             let padding = g:tagbar_show_visibility ? ' ' : ''
             if g:tagbar_compact && is_first_tag && s:short_help
                 silent 0put =foldmarker . padding . kind.long
-            else
+            el
                 silent  put =foldmarker . padding . kind.long
-            endif
+            en
 
             let curline                   = line('.')
             let kindtag.tline             = curline
@@ -1901,29 +1900,29 @@ function! s:PrintKinds(typeinfo, fileinfo) abort
                     let a:fileinfo.tline[curline] = tag
                     let tag.depth                 = 1
                 endfor
-            endif
+            en
 
             if !g:tagbar_compact
                 silent put _
-            endif
+            en
 
             let is_first_tag = 0
-        endif
+        en
     endfor
-endfunction
+endf
 
-function! s:PrintTag(tag, depth, is_first, fileinfo, typeinfo) abort
+fu! s:PrintTag(tag, depth, is_first, fileinfo, typeinfo) abort
     if g:tagbar_hide_nonpublic && get(a:tag.fields, 'access', 'public') !=# 'public'
         let a:tag.tline = -1
         return
-    endif
+    en
 
     let tagstr = repeat(' ', a:depth * g:tagbar_indent) . a:tag.strfmt()
     if a:is_first && g:tagbar_compact && s:short_help
         silent 0put =tagstr
-    else
+    el
         silent  put =tagstr
-    endif
+    en
 
     let curline                   = line('.')
     let a:tag.tline               = curline
@@ -1934,7 +1933,7 @@ function! s:PrintTag(tag, depth, is_first, fileinfo, typeinfo) abort
             let childfilter = 'v:val.fields.kind ==# ckind.short'
             if g:tagbar_hide_nonpublic
                 let childfilter .= ' && get(v:val.fields, "access", "public") ==# "public"'
-            endif
+            en
             let childtags = filter(copy(a:tag.children), childfilter)
             if len(childtags) > 0
                 if !has_key(a:typeinfo.kind2scope, ckind.short)
@@ -1946,16 +1945,16 @@ function! s:PrintTag(tag, depth, is_first, fileinfo, typeinfo) abort
                     let headertag.parent = a:tag
                     let headertag.fileinfo = a:tag.fileinfo
                     let a:fileinfo.tline[line('.')] = headertag
-                endif
+                en
                 for childtag in childtags
                     call s:PrintTag(childtag, a:depth + 1, 0, a:fileinfo, a:typeinfo)
                 endfor
-            endif
+            en
         endfor
-    endif
-endfunction
+    en
+endf
 
-function! s:PrintHelp() abort
+fu! s:PrintHelp() abort
     if !g:tagbar_compact && s:short_help
         silent 0put ='\" Press ' . s:get_map_str('help') . ' for help'
         silent  put _
@@ -1989,24 +1988,24 @@ function! s:PrintHelp() abort
         silent  put ='\" ' . s:get_map_str('close') . ': Close window'
         silent  put ='\" ' . s:get_map_str('help') . ': Toggle help'
         silent  put _
-    endif
-endfunction
+    en
+endf
 
-function! s:get_map_str(map) abort
+fu! s:get_map_str(map) abort
     let def = get(g:, 'tagbar_map_' . a:map)
     if type(def) == type("")
         return def
-    else
+    el
         return join(def, ', ')
-    endif
-endfunction
+    en
+endf
 
-function! s:RenderKeepView(...) abort
+fu! s:RenderKeepView(...) abort
     if a:0 == 1
         let line = a:1
-    else
+    el
         let line = line('.')
-    endif
+    en
 
     let curcol  = col('.')
     let topline = line('w0')
@@ -2023,59 +2022,59 @@ function! s:RenderKeepView(...) abort
     let &scrolloff = scrolloff_save
 
     redraw
-endfunction
+endf
 
-function! s:HighlightTag(openfolds, ...) abort
+fu! s:HighlightTag(openfolds, ...) abort
     let tagline = 0
 
     let force = a:0 > 0 ? a:1 : 0
 
     if a:0 > 1
         let tag = s:GetNearbyTag(1, 0, a:2)
-    else
+    el
         let tag = s:GetNearbyTag(1, 0)
-    endif
+    en
     if !empty(tag)
         let tagline = tag.tline
-    endif
+    en
 
     if !force && tagline == s:last_highlight_tline
         return
-    else
+    el
         let s:last_highlight_tline = tagline
-    endif
+    en
 
     let tagbarwinnr = bufwinnr(s:TagbarBufName())
     if tagbarwinnr == -1
         return
-    endif
+    en
 
     if tagbarwinnr == winnr()
         let in_tagbar = 1
-    else
+    el
         let in_tagbar = 0
         let prevwinnr = winnr()
         call s:goto_win('p', 1)
         let pprevwinnr = winnr()
         call s:goto_win(tagbarwinnr, 1)
-    endif
+    en
 
     try
         match none
 
         if tagline == 0
             return
-        endif
+        en
 
         if g:tagbar_autoshowtag == 1 || a:openfolds
             call s:OpenParents(tag)
-        endif
+        en
 
         let tagline = tag.getClosedParentTline()
 
         if tagline <= 0
             return
-        endif
+        en
 
         execute tagline
 
@@ -2085,26 +2084,26 @@ function! s:HighlightTag(openfolds, ...) abort
         let pattern = '/^\%' . tagline . 'l\s*' . foldpat . '[-+# ]\zs[^( ]\+\ze/'
         if hlexists('TagbarHighlight') " Safeguard in case syntax highlighting is disabled
             execute 'match TagbarHighlight ' . pattern
-        else
+        el
             execute 'match Search ' . pattern
-        endif
+        en
     finally
         if !in_tagbar
             call s:goto_win(pprevwinnr, 1)
             call s:goto_win(prevwinnr, 1)
-        endif
+        en
         redraw
     endtry
-endfunction
+endf
 
-function! s:JumpToTag(stay_in_tagbar) abort
+fu! s:JumpToTag(stay_in_tagbar) abort
     let taginfo = s:GetTagInfo(line('.'), 1)
 
     let autoclose = w:autoclose
 
     if empty(taginfo) || !taginfo.isNormalTag()
         return
-    endif
+    en
 
     let tagbarwinnr = winnr()
 
@@ -2120,27 +2119,27 @@ function! s:JumpToTag(stay_in_tagbar) abort
             if !forward
                 if interval > line('$')
                     break
-                else
+                el
                     let interval = interval * 2
-                endif
-            endif
+                en
+            en
             let forward = !forward
         endwhile
-    endif
+    en
 
     let curline = line('.')
     if taginfo.fields.line != curline
         let taginfo.fields.line = curline
         let taginfo.fileinfo.fline[curline] = taginfo
-    endif
+    en
 
     normal! z.
     if taginfo.fields.column > 0
         call cursor(taginfo.fields.line, taginfo.fields.column)
-    else
+    el
         call cursor(taginfo.fields.line, 1)
         call search(taginfo.name, 'c', line('.'))
-    endif
+    en
 
     normal! zv
 
@@ -2150,47 +2149,47 @@ function! s:JumpToTag(stay_in_tagbar) abort
         redraw
     elseif g:tagbar_autoclose || autoclose
         call s:CloseWindow()
-    else
+    el
         if s:pwin_by_tagbar
             pclose
-        endif
+        en
         call s:HighlightTag(0)
-    endif
-endfunction
+    en
+endf
 
-function! s:ShowInPreviewWin() abort
+fu! s:ShowInPreviewWin() abort
     let pos = getpos('.')
     let taginfo = s:GetTagInfo(pos[1], 1)
 
     if empty(taginfo) || !taginfo.isNormalTag()
         return
-    endif
+    en
 
     let pwin_open = 0
     for win in range(1, winnr('$'))
         if getwinvar(win, '&previewwindow')
             let pwin_open = 1
             break
-        endif
+        en
     endfor
 
     if g:tagbar_vertical == 0
         call s:GotoFileWindow(taginfo.fileinfo, 1)
         call s:mark_window()
-    endif
+    en
 
     if !pwin_open
         silent execute g:tagbar_previewwin_pos . ' pedit ' . fnameescape(taginfo.fileinfo.fpath)
         if g:tagbar_vertical != 0
             silent execute 'vertical resize ' . g:tagbar_width
-        endif
+        en
         let s:pwin_by_tagbar = 1
-    endif
+    en
 
     if g:tagbar_vertical != 0
         call s:GotoFileWindow(taginfo.fileinfo, 1)
         call s:mark_window()
-    endif
+    en
 
     let include_save = &include
     set include=
@@ -2203,19 +2202,19 @@ function! s:ShowInPreviewWin() abort
     call s:goto_markedwin(1)
     call s:goto_tagbar(1)
     call cursor(pos[1], pos[2])
-endfunction
+endf
 
-function! s:ShowPrototype(short) abort
+fu! s:ShowPrototype(short) abort
     let taginfo = s:GetTagInfo(line('.'), 1)
 
     if empty(taginfo)
         return ''
-    endif
+    en
 
     echo taginfo.getPrototype(a:short)
-endfunction
+endf
 
-function! s:ToggleHelp() abort
+fu! s:ToggleHelp() abort
     let s:short_help = !s:short_help
 
     match none
@@ -2224,17 +2223,17 @@ function! s:ToggleHelp() abort
 
     execute 1
     redraw
-endfunction
+endf
 
-function! s:GotoNextToplevelTag(direction) abort
+fu! s:GotoNextToplevelTag(direction) abort
     let curlinenr = line('.')
     let newlinenr = line('.')
 
     if a:direction == 1
         let range = range(line('.') + 1, line('$'))
-    else
+    el
         let range = range(line('.') - 1, 1, -1)
-    endif
+    en
 
     for tmplinenr in range
         let taginfo = s:GetTagInfo(tmplinenr, 0)
@@ -2244,40 +2243,40 @@ function! s:GotoNextToplevelTag(direction) abort
         elseif empty(taginfo.parent)
             let newlinenr = tmplinenr
             break
-        endif
+        en
     endfor
 
     if curlinenr != newlinenr
         execute newlinenr
         call winline()
-    endif
+    en
 
     redraw
-endfunction
+endf
 
-function! s:OpenFold() abort
+fu! s:OpenFold() abort
     let fileinfo = s:TagbarState().getCurrent(0)
     if empty(fileinfo)
         return
-    endif
+    en
 
     let curline = line('.')
 
     let tag = s:GetTagInfo(curline, 0)
     if empty(tag)
         return
-    endif
+    en
 
     call tag.openFold()
 
     call s:RenderKeepView()
-endfunction
+endf
 
-function! s:CloseFold() abort
+fu! s:CloseFold() abort
     let fileinfo = s:TagbarState().getCurrent(0)
     if empty(fileinfo)
         return
-    endif
+    en
 
     match none
 
@@ -2286,25 +2285,25 @@ function! s:CloseFold() abort
     let curtag = s:GetTagInfo(curline, 0)
     if empty(curtag)
         return
-    endif
+    en
 
     let newline = curtag.closeFold()
 
     call s:RenderKeepView(newline)
-endfunction
+endf
 
-function! s:ToggleFold() abort
+fu! s:ToggleFold() abort
     let fileinfo = s:TagbarState().getCurrent(0)
     if empty(fileinfo)
         return
-    endif
+    en
 
     match none
 
     let curtag = s:GetTagInfo(line('.'), 0)
     if empty(curtag)
         return
-    endif
+    en
 
     let newline = line('.')
 
@@ -2313,26 +2312,26 @@ function! s:ToggleFold() abort
     elseif curtag.isFoldable()
         if curtag.isFolded()
             call curtag.openFold()
-        else
+        el
             let newline = curtag.closeFold()
-        endif
-    else
+        en
+    el
         let newline = curtag.closeFold()
-    endif
+    en
 
     call s:RenderKeepView(newline)
-endfunction
+endf
 
-function! s:SetFoldLevel(level, force) abort
+fu! s:SetFoldLevel(level, force) abort
     if a:level < 0
         call s:warning('Foldlevel can''t be negative')
         return
-    endif
+    en
 
     let fileinfo = s:TagbarState().getCurrent(0)
     if empty(fileinfo)
         return
-    endif
+    en
 
     call s:SetFoldLevelRecursive(fileinfo, fileinfo.tags, a:level)
 
@@ -2342,47 +2341,47 @@ function! s:SetFoldLevel(level, force) abort
         for kind in typeinfo.kinds
             call fileinfo.closeKindFold(kind)
         endfor
-    else
+    el
         for kind in typeinfo.kinds
             if a:force || !kind.fold
                 call fileinfo.openKindFold(kind)
-            endif
+            en
         endfor
-    endif
+    en
 
     let fileinfo.foldlevel = a:level
 
     call s:RenderContent()
-endfunction
+endf
 
-function! s:SetFoldLevelRecursive(fileinfo, tags, level) abort
+fu! s:SetFoldLevelRecursive(fileinfo, tags, level) abort
     for tag in a:tags
         if tag.depth >= a:level
             call tag.setFolded(1)
-        else
+        el
             call tag.setFolded(0)
-        endif
+        en
 
         if has_key(tag, 'children')
             call s:SetFoldLevelRecursive(a:fileinfo, tag.children, a:level)
-        endif
+        en
     endfor
-endfunction
+endf
 
-function! s:OpenParents(...) abort
+fu! s:OpenParents(...) abort
     if a:0 == 1
         let tag = a:1
-    else
+    el
         let tag = s:GetNearbyTag(1, 0)
-    endif
+    en
 
     if !empty(tag)
         call tag.openParents()
         call s:RenderKeepView()
-    endif
-endfunction
+    en
+endf
 
-function! s:GotoNextFold() abort
+fu! s:GotoNextFold() abort
     let curlinenr = line('.')
     let newlinenr = line('.')
 
@@ -2396,18 +2395,18 @@ function! s:GotoNextFold() abort
         elseif !empty(get(taginfo, 'children', [])) || taginfo.isKindheader()
             let newlinenr = linenr
             break
-        endif
+        en
     endfor
 
     if curlinenr != newlinenr
         execute linenr
         call winline()
-    endif
+    en
 
     redraw
-endfunction
+endf
 
-function! s:GotoPrevFold() abort
+fu! s:GotoPrevFold() abort
     let curlinenr = line('.')
     let newlinenr = line('.')
     let curtag = s:GetTagInfo(curlinenr, 0)
@@ -2426,36 +2425,36 @@ function! s:GotoPrevFold() abort
               \ taginfo.isFolded())
             let newlinenr = linenr
             break
-        endif
+        en
     endfor
 
     if curlinenr != newlinenr
         execute linenr
         call winline()
-    endif
+    en
 
     redraw
-endfunction
+endf
 
-function! s:AutoUpdate(fname, force) abort
+fu! s:AutoUpdate(fname, force) abort
     if exists('s:tagbar_qf_active')
         return
     elseif exists('s:window_opening')
         return
-    endif
+    en
 
     let bufnr = bufnr(a:fname)
     let ftype = getbufvar(bufnr, '&filetype')
 
     if ftype == 'tagbar'
         return
-    endif
+    en
 
     let sftype = get(split(ftype, '\.'), 0, '')
     if !s:IsValidFile(a:fname, sftype)
         let s:nearby_disabled = 1
         return
-    endif
+    en
 
     let updated = 0
 
@@ -2465,36 +2464,36 @@ function! s:AutoUpdate(fname, force) abort
         if a:force || empty(curfile) || curfile.ftype != sftype || (filereadable(a:fname) && getftime(a:fname) > curfile.mtime)
             call s:ProcessFile(a:fname, sftype)
             let updated = 1
-        else
-        endif
+        el
+        en
     elseif !s:known_files.has(a:fname)
         call s:ProcessFile(a:fname, sftype)
         let updated = 1
-    endif
+    en
 
     let fileinfo = s:known_files.get(a:fname)
 
     if empty(fileinfo)
         return
-    endif
+    en
 
     if bufwinnr(s:TagbarBufName()) != -1 && !s:paused &&
      \ (s:new_window || updated ||
       \ (!empty(s:TagbarState().getCurrent(0)) &&
        \ a:fname != s:TagbarState().getCurrent(0).fpath))
         call s:RenderContent(fileinfo)
-    endif
+    en
 
     if !empty(fileinfo)
         call s:TagbarState().setCurrent(fileinfo)
         let s:nearby_disabled = 0
-    endif
+    en
 
     call s:HighlightTag(0)
     call s:SetStatusLine()
-endfunction
+endf
 
-function! s:CheckMouseClick() abort
+fu! s:CheckMouseClick() abort
     let line   = getline('.')
     let curcol = col('.')
 
@@ -2504,19 +2503,19 @@ function! s:CheckMouseClick() abort
         call s:OpenFold()
     elseif g:tagbar_singleclick
         call s:JumpToTag(0)
-    endif
-endfunction
+    en
+endf
 
-function! s:DetectFiletype(bufnr) abort
+fu! s:DetectFiletype(bufnr) abort
     let ftype = getbufvar(a:bufnr, '&filetype')
 
     if bufloaded(a:bufnr)
         return ftype
-    endif
+    en
 
     if ftype != ''
         return ftype
-    endif
+    en
 
     let bufname = bufname(a:bufnr)
     let eventignore_save = &eventignore
@@ -2530,19 +2529,19 @@ function! s:DetectFiletype(bufnr) abort
     let &eventignore = eventignore_save
 
     return ftype
-endfunction
+endf
 
-function! s:EscapeCtagsCmd(ctags_bin, args, ...) abort
+fu! s:EscapeCtagsCmd(ctags_bin, args, ...) abort
     if exists('+shellslash')
         let shellslash_save = &shellslash
         set noshellslash
-    endif
+    en
 
     if &shell =~ 'cmd\.exe$' && a:ctags_bin !~ '\s'
         let ctags_cmd = a:ctags_bin
-    else
+    el
         let ctags_cmd = shellescape(a:ctags_bin)
-    endif
+    en
 
     if type(a:args)==type('')
         let ctags_cmd .= ' ' . a:args
@@ -2550,88 +2549,88 @@ function! s:EscapeCtagsCmd(ctags_bin, args, ...) abort
         for arg in a:args
             let ctags_cmd .= ' ' . shellescape(arg)
         endfor
-    endif
+    en
 
     if a:0 == 1
         let ctags_cmd .= ' ' . shellescape(a:1)
-    endif
+    en
 
     if exists('+shellslash')
         let &shellslash = shellslash_save
-    endif
+    en
 
     if has('multi_byte')
         if g:tagbar_systemenc != &encoding
             let ctags_cmd = iconv(ctags_cmd, &encoding, g:tagbar_systemenc)
         elseif $LANG != ''
             let ctags_cmd = iconv(ctags_cmd, &encoding, $LANG)
-        endif
-    endif
+        en
+    en
 
     if ctags_cmd == ''
         if !s:warnings.encoding
             call s:warning('Tagbar: Ctags command encoding conversion failed!' .
                 \ ' Please read ":h g:tagbar_systemenc".')
             let s:warnings.encoding = 1
-        endif
-    endif
+        en
+    en
 
     return ctags_cmd
-endfunction
+endf
 
-function! s:ExecuteCtags(ctags_cmd) abort
+fu! s:ExecuteCtags(ctags_cmd) abort
     if &shell =~# 'fish$'
         " Reset shell since fish isn't really compatible
         let shell_save = &shell
         set shell=sh
-    endif
+    en
 
     if exists('+shellslash')
         let shellslash_save = &shellslash
         set noshellslash
-    endif
+    en
 
     if &shell =~ 'cmd\.exe'
         let shellxquote_save = &shellxquote
         set shellxquote=\"
         let shellcmdflag_save = &shellcmdflag
         set shellcmdflag=/s\ /c
-    endif
+    en
 
         silent let ctags_output = system(a:ctags_cmd)
 
     if &shell =~ 'cmd\.exe'
         let &shellxquote  = shellxquote_save
         let &shellcmdflag = shellcmdflag_save
-    endif
+    en
 
     if exists('+shellslash')
         let &shellslash = shellslash_save
-    endif
+    en
 
     if exists('shell_save')
         let &shell = shell_save
-    endif
+    en
 
     return ctags_output
-endfunction
+endf
 
-function! s:GetNearbyTag(all, forcecurrent, ...) abort
+fu! s:GetNearbyTag(all, forcecurrent, ...) abort
     if s:nearby_disabled
         return {}
-    endif
+    en
 
     let fileinfo = s:TagbarState().getCurrent(a:forcecurrent)
     if empty(fileinfo)
         return {}
-    endif
+    en
 
     let typeinfo = fileinfo.typeinfo
     if a:0 > 0
         let curline = a:1
-    else
+    el
         let curline = line('.')
-    endif
+    en
     let tag = {}
 
     for line in range(curline, 1, -1)
@@ -2640,60 +2639,60 @@ function! s:GetNearbyTag(all, forcecurrent, ...) abort
             if a:all || typeinfo.getKind(curtag.fields.kind).stl
                 let tag = curtag
                 break
-            endif
-        endif
+            en
+        en
     endfor
 
     return tag
-endfunction
+endf
 
-function! s:GetTagInfo(linenr, ignorepseudo) abort
+fu! s:GetTagInfo(linenr, ignorepseudo) abort
     let fileinfo = s:TagbarState().getCurrent(0)
 
     if empty(fileinfo)
         return {}
-    endif
+    en
 
     let curline = getbufline(bufnr(s:TagbarBufName()), a:linenr)[0]
     if curline =~ '^\s*$' || curline[0] == '"'
         return {}
-    endif
+    en
 
     if !has_key(fileinfo.tline, a:linenr)
         return {}
-    endif
+    en
 
     let taginfo = fileinfo.tline[a:linenr]
 
     if a:ignorepseudo && taginfo.isPseudoTag()
         return {}
-    endif
+    en
 
     return taginfo
-endfunction
+endf
 
-function! s:GetFileWinnr(fileinfo) abort
+fu! s:GetFileWinnr(fileinfo) abort
     let filewinnr = 0
     let prevwinnr = winnr("#")
 
     if winbufnr(prevwinnr) == a:fileinfo.bufnr && !getwinvar(prevwinnr, '&previewwindow')
         let filewinnr = prevwinnr
-    else
+    el
         for i in range(1, winnr('$'))
             call s:goto_win(i, 1)
             if bufnr('%') == a:fileinfo.bufnr && !&previewwindow
                 let filewinnr = winnr()
                 break
-            endif
+            en
         endfor
 
         call s:goto_tagbar(1)
-    endif
+    en
 
     return filewinnr
-endfunction
+endf
 
-function! s:GotoFileWindow(fileinfo, ...) abort
+fu! s:GotoFileWindow(fileinfo, ...) abort
     let noauto = a:0 > 0 ? a:1 : 0
 
     let filewinnr = s:GetFileWinnr(a:fileinfo)
@@ -2704,21 +2703,21 @@ function! s:GotoFileWindow(fileinfo, ...) abort
             if &buftype == '' && !&previewwindow
                 execute 'buffer ' . a:fileinfo.bufnr
                 break
-            endif
+            en
         endfor
-    else
+    el
         call s:goto_win(filewinnr, 1)
-    endif
+    en
 
     call s:goto_tagbar(noauto)
     call s:goto_win('p', noauto)
-endfunction
+endf
 
-function! s:ToggleHideNonPublicTags() abort
+fu! s:ToggleHideNonPublicTags() abort
     let fileinfo = s:TagbarState().getCurrent(0)
     if empty(fileinfo)
         return
-    endif
+    en
 
     let curline = line('.')
     let taginfo = s:GetTagInfo(curline, 0)
@@ -2731,16 +2730,16 @@ function! s:ToggleHideNonPublicTags() abort
 
     if !empty(taginfo)
         execute taginfo.tline
-    else
+    el
         execute curline
-    endif
-endfunction
+    en
+endf
 
-function! s:ToggleCaseInsensitive() abort
+fu! s:ToggleCaseInsensitive() abort
     let fileinfo = s:TagbarState().getCurrent(0)
     if empty(fileinfo)
         return
-    endif
+    en
 
     let curline = line('.')
     let taginfo = s:GetTagInfo(curline, 0)
@@ -2756,55 +2755,55 @@ function! s:ToggleCaseInsensitive() abort
 
     if !empty(taginfo)
         execute taginfo.tline
-    else
+    el
         execute curline
-    endif
-endfunction
+    en
+endf
 
-function! s:ToggleAutoclose() abort
+fu! s:ToggleAutoclose() abort
     let g:tagbar_autoclose = !g:tagbar_autoclose
     call s:SetStatusLine()
-endfunction
+endf
 
-function! s:IsValidFile(fname, ftype) abort
+fu! s:IsValidFile(fname, ftype) abort
 
     if a:fname == '' || a:ftype == ''
         return 0
-    endif
+    en
 
     if !filereadable(a:fname) && getbufvar(a:fname, 'netrw_tmpfile') == ''
         return 0
-    endif
+    en
 
     if getbufvar(a:fname, 'tagbar_ignore') == 1
         return 0
-    endif
+    en
 
     let winnr = bufwinnr(a:fname)
     if winnr != -1 && getwinvar(winnr, '&diff')
         return 0
-    endif
+    en
 
     if &previewwindow
         return 0
-    endif
+    en
 
     if !has_key(s:known_types, a:ftype)
         if exists('g:tagbar_type_' . a:ftype)
             call s:LoadUserTypeDefs(a:ftype)
-        else
+        el
             return 0
-        endif
-    endif
+        en
+    en
 
     return 1
-endfunction
+endf
 
-function! s:SetStatusLine()
+fu! s:SetStatusLine()
     let tagbarwinnr = bufwinnr(s:TagbarBufName())
     if tagbarwinnr == -1
         return
-    endif
+    en
 
     if tagbarwinnr != winnr()
         let in_tagbar = 0
@@ -2812,18 +2811,18 @@ function! s:SetStatusLine()
         call s:goto_win('p', 1)
         let pprevwinnr = winnr()
         call s:goto_win(tagbarwinnr, 1)
-    else
+    el
         let in_tagbar = 1
-    endif
+    en
 
     if !empty(s:TagbarState().getCurrent(0))
         let fileinfo = s:TagbarState().getCurrent(0)
         let fname = fnamemodify(fileinfo.fpath, ':t')
         let sorted = get(fileinfo.typeinfo, 'sort', g:tagbar_sort)
-    else
+    el
         let fname = ''
         let sorted = g:tagbar_sort
-    endif
+    en
     let sortstr = sorted ? 'Name' : 'Order'
 
     let flags = []
@@ -2835,27 +2834,27 @@ function! s:SetStatusLine()
     if exists('g:tagbar_status_func')
         let args = [in_tagbar, sortstr, fname, flags]
         let &l:statusline = call(g:tagbar_status_func, args)
-    else
+    el
         let colour = in_tagbar ? '%#StatusLine#' : '%#StatusLineNC#'
         let flagstr = join(flags, '')
         if flagstr != ''
             let flagstr = '[' . flagstr . '] '
-        endif
+        en
         let text = colour . '[' . sortstr . '] ' . flagstr . fname
         let &l:statusline = text
-    endif
+    en
 
     if !in_tagbar
         call s:goto_win(pprevwinnr, 1)
         call s:goto_win(prevwinnr, 1)
-    endif
-endfunction
+    en
+endf
 
-function! s:HandleOnlyWindow() abort
+fu! s:HandleOnlyWindow() abort
     let tagbarwinnr = bufwinnr(s:TagbarBufName())
     if tagbarwinnr == -1
         return
-    endif
+    en
 
     let vim_quitting = s:vim_quitting
     let s:vim_quitting = 0
@@ -2863,11 +2862,11 @@ function! s:HandleOnlyWindow() abort
     if vim_quitting && !s:HasOpenFileWindows()
         if winnr('$') >= 1
             call s:goto_win(tagbarwinnr, 1)
-        endif
+        en
 
         if tabpagenr('$') == 1
             noautocmd keepalt bdelete
-        endif
+        en
 
         try
             try
@@ -2881,19 +2880,19 @@ function! s:HandleOnlyWindow() abort
             echo v:exception
             echohl None
         endtry
-    endif
-endfunction
+    en
+endf
 
-function! s:HandleBufDelete(bufname, bufnr) abort
+fu! s:HandleBufDelete(bufname, bufnr) abort
     let nr = str2nr(a:bufnr)
     if bufexists(nr) && !buflisted(nr)
         return
-    endif
+    en
 
     let tagbarwinnr = bufwinnr(s:TagbarBufName())
     if tagbarwinnr == -1 || a:bufname =~ '__Tagbar__.*'
         return
-    endif
+    en
 
     call s:known_files.rm(fnamemodify(a:bufname, ':p'))
 
@@ -2904,166 +2903,166 @@ function! s:HandleBufDelete(bufname, bufnr) abort
             if s:last_alt_bufnr == -1 || s:last_alt_bufnr == expand('<abuf>')
                 if argc() > 1 && argidx() < argc() - 1
                     next
-                else
+                el
                     enew
-                endif
-            else
+                en
+            el
                 let last_alt_bufnr = s:last_alt_bufnr
 
                 call setbufvar(last_alt_bufnr, 'tagbar_ignore', 1)
                 execute 'keepalt buffer' last_alt_bufnr
                 call setbufvar(last_alt_bufnr, 'tagbar_ignore', 0)
-            endif
+            en
 
             set winfixwidth<
 
             call s:OpenWindow('')
         elseif exists('t:tagbar_buf_name')
             close
-        endif
-    endif
-endfunction
+        en
+    en
+endf
 
-function! s:ReopenWindow(delbufname) abort
+fu! s:ReopenWindow(delbufname) abort
     if expand('<amatch>') == a:delbufname
         return
-    endif
+    en
 
     autocmd! TagbarAutoCmds BufWinEnter
     call s:OpenWindow("")
-endfunction
+endf
 
-function! s:HasOpenFileWindows() abort
+fu! s:HasOpenFileWindows() abort
     for i in range(1, winnr('$'))
         let buf = winbufnr(i)
 
         if !buflisted(buf) && getbufvar(buf, '&filetype') != 'netrw'
             continue
-        endif
+        en
 
         if getbufvar(buf, '&buftype') != ''
             continue
-        endif
+        en
 
         if getwinvar(i, '&previewwindow')
             continue
-        endif
+        en
 
         return 1
     endfor
 
     return 0
-endfunction
+endf
 
-function! s:TagbarBufName() abort
+fu! s:TagbarBufName() abort
     if !exists('t:tagbar_buf_name')
         let s:buffer_seqno += 1
         let t:tagbar_buf_name = '__Tagbar__.' . s:buffer_seqno
-    endif
+    en
 
     return t:tagbar_buf_name
-endfunction
+endf
 
-function! s:TagbarState() abort
+fu! s:TagbarState() abort
     if !exists('t:tagbar_state')
         let t:tagbar_state = s:state.New()
-    endif
+    en
 
     return t:tagbar_state
-endfunction
+endf
 
-function! s:goto_win(winnr, ...) abort
+fu! s:goto_win(winnr, ...) abort
     let cmd = type(a:winnr) == type(0) ? a:winnr . 'wincmd w' : 'wincmd ' . a:winnr
     let noauto = a:0 > 0 ? a:1 : 0
 
     if noauto
         noautocmd execute cmd
-    else
+    el
         execute cmd
-    endif
-endfunction
+    en
+endf
 
-function! s:goto_tagbar(...) abort
+fu! s:goto_tagbar(...) abort
     let noauto = a:0 > 0 ? a:1 : 0
     call s:goto_win(bufwinnr(s:TagbarBufName()), noauto)
-endfunction
+endf
 
-function! s:mark_window() abort
+fu! s:mark_window() abort
     let w:tagbar_mark = 1
-endfunction
+endf
 
-function! s:goto_markedwin(...) abort
+fu! s:goto_markedwin(...) abort
     let noauto = a:0 > 0 ? a:1 : 0
     for window in range(1, winnr('$'))
         call s:goto_win(window, noauto)
         if exists('w:tagbar_mark')
             unlet w:tagbar_mark
             break
-        endif
+        en
     endfor
-endfunction
+endf
 
-function! s:warning(msg) abort
+fu! s:warning(msg) abort
     echohl WarningMsg
-    echomsg a:msg
+    echom a:msg
     echohl None
-endfunction
+endf
 
-function! TagbarBalloonExpr() abort
+fu! TagbarBalloonExpr() abort
     let taginfo = s:GetTagInfo(v:beval_lnum, 1)
 
     if empty(taginfo)
         return ''
-    endif
+    en
 
     return taginfo.getPrototype(0)
-endfunction
+endf
 
 " Wrappers {{{2
-function! tagbar#ToggleWindow(...) abort
+fu! tagbar#ToggleWindow(...) abort
     let flags = a:0 > 0 ? a:1 : ''
     call s:ToggleWindow(flags)
-endfunction
+endf
 
-function! tagbar#OpenWindow(...) abort
+fu! tagbar#OpenWindow(...) abort
     let flags = a:0 > 0 ? a:1 : ''
     call s:OpenWindow(flags)
-endfunction
+endf
 
-function! tagbar#CloseWindow() abort
+fu! tagbar#CloseWindow() abort
     call s:CloseWindow()
-endfunction
+endf
 
-function! tagbar#SetFoldLevel(level, force) abort
+fu! tagbar#SetFoldLevel(level, force) abort
     call s:SetFoldLevel(a:level, a:force)
-endfunction
+endf
 
-function! tagbar#highlighttag(openfolds, force) abort
+fu! tagbar#highlighttag(openfolds, force) abort
     let tagbarwinnr = bufwinnr(s:TagbarBufName())
     if tagbarwinnr == -1
         echohl WarningMsg
-        echomsg "Warning: Can't highlight tag, Tagbar window not open"
+        echom "Warning: Can't highlight tag, Tagbar window not open"
         echohl None
         return
-    endif
+    en
     call s:HighlightTag(a:openfolds, a:force)
-endfunction
+endf
 
-function! tagbar#RestoreSession() abort
+fu! tagbar#RestoreSession() abort
     call s:RestoreSession()
-endfunction
+endf
 
-function! tagbar#toggle_pause() abort
+fu! tagbar#toggle_pause() abort
     let s:paused = !s:paused
 
     if s:paused
         call s:TagbarState().setPaused()
-    else
+    el
         call s:AutoUpdate(fnamemodify(expand('%'), ':p'), 1)
-    endif
-endfunction
+    en
+endf
 
-function! tagbar#getusertypes() abort
+fu! tagbar#getusertypes() abort
     let userdefs = filter(copy(g:), 'v:key =~ "^tagbar_type_"')
 
     let typedict = {}
@@ -3073,9 +3072,9 @@ function! tagbar#getusertypes() abort
     endfor
 
     return typedict
-endfunction
+endf
 
-function! tagbar#autoopen(...) abort
+fu! tagbar#autoopen(...) abort
     let always = a:0 > 0 ? a:1 : 1
 
     call s:Init(0)
@@ -3086,62 +3085,62 @@ function! tagbar#autoopen(...) abort
             if s:IsValidFile(bufname(bufnr), ftype)
                 call s:OpenWindow('')
                 return
-            endif
-        endif
+            en
+        en
     endfor
-endfunction
+endf
 
-function! tagbar#currenttag(fmt, default, ...) abort
+fu! tagbar#currenttag(fmt, default, ...) abort
     let s:statusline_in_use = 1
 
     if a:0 > 0
         let longsig   = a:1 =~# 's' || (type(a:1) == type(0) && a:1 != 0)
         let fullpath  = a:1 =~# 'f'
         let prototype = a:1 =~# 'p'
-    else
+    el
         let longsig   = 0
         let fullpath  = 0
         let prototype = 0
-    endif
+    en
 
     if !s:Init(1)
         return a:default
-    endif
+    en
 
     let tag = s:GetNearbyTag(0, 1)
 
     if !empty(tag)
         if prototype
             return tag.getPrototype(1)
-        else
+        el
             return printf(a:fmt, tag.str(longsig, fullpath))
-        endif
-    else
+        en
+    el
         return a:default
-    endif
-endfunction
+    en
+endf
 
-function! tagbar#currentfile() abort
+fu! tagbar#currentfile() abort
     let filename = ''
 
     if !empty(s:TagbarState().getCurrent(1))
         let filename = fnamemodify(s:TagbarState().getCurrent(1).fpath, ':t')
-    endif
+    en
 
     return filename
-endfunction
+endf
 
-function! tagbar#gettypeconfig(type) abort
+fu! tagbar#gettypeconfig(type) abort
     if !s:Init(1)
         return ''
-    endif
+    en
 
     let typeinfo = get(s:known_types, a:type, {})
 
     if empty(typeinfo)
         call s:warning('Unknown type ' . a:type . '!')
         return
-    endif
+    en
 
     let output = "let g:tagbar_type_" . a:type . " = {\n"
 
@@ -3151,13 +3150,13 @@ function! tagbar#gettypeconfig(type) abort
         if kind.fold || !kind.stl
             if kind.fold
                 let output .= ":1"
-            else
+            el
                 let output .= ":0"
-            endif
-        endif
+            en
+        en
         if !kind.stl
             let output .= ":0"
-        endif
+        en
         let output .= "',\n"
     endfor
     let output .= "    \\ ],\n"
@@ -3165,8 +3164,8 @@ function! tagbar#gettypeconfig(type) abort
     let output .= "\\ }"
 
     silent put =output
-endfunction
+endf
 
-function! tagbar#inspect(var) abort
+fu! tagbar#inspect(var) abort
     return get(s:, a:var)
-endfunction
+endf

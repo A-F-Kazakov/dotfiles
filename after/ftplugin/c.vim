@@ -1,16 +1,16 @@
-function! MyFoldText()
+fu! MyFoldText()
 	let nl = v:foldend - v:foldstart + 1
 	let fbegin = trim(getline(v:foldstart))
 	let fend = trim(getline(v:foldend))
 	let txt = '+ ' . fbegin . ' ' . nl . ' ' . fend
 	return txt
-endfunction
+endf
 
-setlocal nowrap
-setlocal fdls=0
-setlocal fdm=syntax	
-setlocal noic
+setl nowrap
+setl fdls=0
+setl fdm=syntax	
+setl noic
 
-setlocal syntax=c.doxygen
-setlocal foldtext=MyFoldText()
+setl syntax=c.doxygen
+setl foldtext=MyFoldText()
 

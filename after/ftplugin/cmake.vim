@@ -1,21 +1,21 @@
-setlocal fdm=manual	
-setlocal noic		
-setlocal list	
-setlocal lcs=tab:·\ ,trail:-
+setl fdm=manual	
+setl noic		
+setl list	
+setl lcs=tab:·\ ,trail:-
 
 let b:project_dir = ".ide"
 
-function! ProjectInitiate()
+fu! ProjectInitiate()
 	if !isdirectory(b:project_dir)
 		if exists("*mkdir")
 			call mkdir(b:project_dir, "p")
 			echom "Project initialized"
-		else
+		el
 			echom "Cannot create project directory"
-		endif
-	endif
-endfunction
+		en
+	en
+endf
 
 if filereadable(".ide/config")
 	so .ide/config
-endif
+en

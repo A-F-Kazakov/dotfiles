@@ -14,5 +14,5 @@ set ssop-=blank,help
 set fdo=""
 set fcl=""
 
-runtime! ide.vim
-runtime! tagbar.vim
+ru! ide.vim
+ru! tagbar.vim
