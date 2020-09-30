@@ -150,9 +150,6 @@
 	nn K i<Cr><Esc>
 	nn U <C-r>
 
-	nn \\ :call ToggleComment()<Cr>
-	vn \\ :call ToggleComment()<Cr>
-
 	nn `` :call ToggleVExplorer()<Cr>
 
 	" Командная строка
@@ -227,23 +224,6 @@
 		map <F8> :emenu Encoding.End_line_format.<Tab>
 
 " Функции
-
-	let s:comment_map = { "c": '\/\/', "cpp": '\/\/', "sh": '#', "fstab": '#', "conf": '#', "profile": '#', "bashrc": '#', "bash_profile": '#', "vim": '"', "tex": '%' }
-
-	fu! ToggleComment()
-		if has_key(s:comment_map, &filetype)
-			let comment_leader = s:comment_map[&filetype]
-			if getline('.') =~ "^\\s*" . comment_leader . " " 
-				exe "silent s/^\\(\\s*\\)" . comment_leader . " /\\1/"
-			el 
-				if getline('.') =~ "^\\s*" . comment_leader
-					exe "silent s/^\\(\\s*\\)" . comment_leader . "/\\1/"
-				el
-					exe "silent s/^\\(\\s*\\)/\\1" . comment_leader . " /"
-				en
-			en
-		en
-	endf
 
 	fu! ToggleVExplorer()
 		if exists("t:expl_buf_num")

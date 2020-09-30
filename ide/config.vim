@@ -28,13 +28,11 @@ let g:tags_file = g:project_cfg_dir . "/tags"
 	endf
 
 	fu! s:project_check()
+		call s:ctags_initiate()
+
 		if filereadable(g:session_file)
 			exe "so " . g:session_file
 		en
-	
-		if !filereadable(g:tags_file)
-			call s:ctags_initiate()
-		en 
 	endf
 
 	fu! s:project_initiate()
