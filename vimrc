@@ -171,6 +171,24 @@
 			no h <C-w>h
 		en
 
+	" suround
+	
+		nm ds	<Plug>Dsurround
+		nm cs	<Plug>Csurround
+		nm cS	<Plug>CSurround
+		nm ys	<Plug>Ysurround
+		nm yS	<Plug>YSurround
+		nm yss <Plug>Yssurround
+		nm ySs <Plug>YSsurround
+		nm ySS <Plug>YSsurround
+		xm S	<Plug>VSurround
+		xm gS	<Plug>VgSurround
+
+	" Коменарии
+
+		nm \\	<Plug>Commentary
+		vm \\ <Plug>CommentaryLine
+
 	" Перемещение строк
 
 		if has('unix')

@@ -15,3 +15,4 @@ set stl+=%#StatusLineDelimeter#%{'│'}%*
 set stl+=\ %{&fileencoding?&fileencoding:&encoding}\ (%{&fileformat})\ 
 set stl+=%#StatusLineDelimeter#%{'│'}%*
 set stl+=\ %v:%l/%L\ 
+

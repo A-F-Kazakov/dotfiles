@@ -98,7 +98,3 @@ com! -range -bar Commentary call s:go(<line1>,<line2>)
 nn <expr>   <Plug>Commentary     <SID>go()
 nn <expr>   <Plug>CommentaryLine <SID>go() . '_'
 
-if !hasmapto('<Plug>Commentary') || maparg('gc','n') ==# ''
-	nn \\  <Plug>Commentary
-	vn \\ <Plug>CommentaryLine
-en

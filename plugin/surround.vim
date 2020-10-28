@@ -576,22 +576,3 @@ vn  <silent> <Plug>VgSurround :<C-U>call <SID>opfunc(visualmode(),visualmode() =
 ino <silent> <Plug>Isurround	<C-R>=<SID>insert()<CR>
 ino <silent> <Plug>ISurround	<C-R>=<SID>insert(1)<CR>
 
-if !exists("g:surround_no_mappings") || ! g:surround_no_mappings
-	nm ds	<Plug>Dsurround
-	nm cs	<Plug>Csurround
-	nm cS	<Plug>CSurround
-	nm ys	<Plug>Ysurround
-	nm yS	<Plug>YSurround
-	nm yss <Plug>Yssurround
-	nm ySs <Plug>YSsurround
-	nm ySS <Plug>YSsurround
-	xm S	<Plug>VSurround
-	xm gS	<Plug>VgSurround
-	if !exists("g:surround_no_insert_mappings") || ! g:surround_no_insert_mappings
-		if !hasmapto("<Plug>Isurround","i") && "" == mapcheck("<C-S>","i")
-			im		<C-S> <Plug>Isurround
-		en
-			im		<C-G>s <Plug>Isurround
-			im		<C-G>S <Plug>ISurround
-	en
-en
