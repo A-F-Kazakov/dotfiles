@@ -12,7 +12,12 @@ nm <A-K> <Plug>MoveLineUp
 nm <A-H> <Plug>MoveLineLeft
 nm <A-L> <Plug>MoveLineRight
 
-no <A-j> <C-w>j
-no <A-k> <C-w>k
-no <A-l> <C-w>l
-no <A-h> <C-w>h
+nm <A-j> <C-w>j
+nm <A-k> <C-w>k
+nm <A-l> <C-w>l
+nm <A-h> <C-w>h
+
+nm <C-j> <C-w>J
+nm <C-k> <C-w>K
+nm <C-l> <C-w>L
+nm <C-h> <C-w>H

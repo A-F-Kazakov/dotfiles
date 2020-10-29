@@ -164,12 +164,17 @@
 
 	" Переключение между окнами
 	
-		if has('unix')
-			no j <C-w>j
-			no k <C-w>k
-			no l <C-w>l
-			no h <C-w>h
-		en
+		nm j <C-w>j
+		nm k <C-w>k
+		nm l <C-w>l
+		nm h <C-w>h
+
+	" Перемещения сплитов
+
+		nm <C-j> <C-w>J
+		nm <C-k> <C-w>K
+		nm <C-l> <C-w>L
+		nm <C-h> <C-w>H
 
 	" suround
 	
@@ -191,24 +196,15 @@
 
 	" Перемещение строк
 
-		if has('unix')
-			vm J <Plug>MoveBlockDown
-			vm K <Plug>MoveBlockUp
-			vm H <Plug>MoveBlockLeft
-			vm L <Plug>MoveBlockRight
+		vm J <Plug>MoveBlockDown
+		vm K <Plug>MoveBlockUp
+		vm H <Plug>MoveBlockLeft
+		vm L <Plug>MoveBlockRight
 
-			nm J <Plug>MoveLineDown
-			nm K <Plug>MoveLineUp
-			nm H <Plug>MoveLineLeft
-			nm L <Plug>MoveLineRight
-		en
-
-	" Перемещения сплитов
-
-		no <C-j> <C-w>J
-		no <C-k> <C-w>K
-		no <C-l> <C-w>L
-		no <C-h> <C-w>H
+		nm J <Plug>MoveLineDown
+		nm K <Plug>MoveLineUp
+		nm H <Plug>MoveLineLeft
+		nm L <Plug>MoveLineRight
 
 	" Показать список буферов
 	
