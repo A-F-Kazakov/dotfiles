@@ -17,7 +17,3 @@ nm <A-k> <C-w>k
 nm <A-l> <C-w>l
 nm <A-h> <C-w>h
 
-nm <C-j> <C-w>J
-nm <C-k> <C-w>K
-nm <C-l> <C-w>L
-nm <C-h> <C-w>H
