@@ -6,5 +6,5 @@ endf
 
 aug auto_clang_format
    au!
-	au BufWritePost *.h,*.cpp call s:format_code()
+	au BufWritePost *.hpp,*.h,*.cpp,*.c call s:format_code()
 aug END

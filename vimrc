@@ -107,7 +107,7 @@
 	set sm				" Показывает парные символы
 	set wmnu				" Дополнительная информация в строке состояния
 	set ch=1				" Делает строку команд высотой в одну строку
-	set so=3				" Количество строк внизу и вверху экрана показываемое при прокрутке
+	"set so=3				" Количество строк внизу и вверху экрана показываемое при прокрутке
 	set ls=2				" Всегда показывает строку состояния
 	set tw=130
 	set cul
@@ -132,6 +132,7 @@
 " Сочетания клавиш
 
 	ino <C-l> <C-^>
+
 	nn ; :
 
 	nn <Cr> o<Esc>
@@ -149,17 +150,12 @@
 	nn dl yyp
 	nn K i<Cr><Esc>
 	nn U <C-r>
+	nn Y y$
 
 	nn `` :call ToggleVExplorer()<Cr>
 
 	" Командная строка
 	
-		cno W! w!
-		cno Q! q!
-		cno Qall! qall!
-		cno Wq wq
-		cno wQ wq
-		cno Qall qall
 		cno vb vert sb
 
 	" Переключение между окнами
@@ -211,6 +207,20 @@
 		nm <F5> :buffers<Cr>
 		vm <F5> <Esc>:buffers<Cr>
 		im <F5> <Esc>:buffers<Cr>
+
+	" Навигация
+	
+		nn <Up> <C-B>
+		nn <Down> <C-F>
+	
+		nn <silent> [b :bn<Cr>
+		nn <silent> ]b :bp<Cr>
+
+		nn <silent> [t :tn<Cr>
+		nn <silent> ]t :tp<Cr>
+
+		nn <silent> [T :tfirst<Cr>
+		nn <silent> ]T :tlast<Cr>
 
 " Меню
 

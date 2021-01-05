@@ -17,3 +17,5 @@ nm <A-k> <C-w>k
 nm <A-l> <C-w>l
 nm <A-h> <C-w>h
 
+nn <Cr> o<Esc>
+
