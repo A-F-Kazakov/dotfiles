@@ -152,6 +152,9 @@
 	nn U <C-r>
 	nn Y y$
 
+	nn n nzvzz
+	nn N Nzvzz
+
 	nn `` :call ToggleVExplorer()<Cr>
 
 	" Командная строка
