@@ -95,6 +95,6 @@ fu! s:textobject(inner) abort
 endfu
 
 com! -range -bar Commentary call s:go(<line1>,<line2>)
-nn <expr>   <Plug>Commentary     <SID>go()
+xn <expr>   <Plug>Commentary     <SID>go()
 nn <expr>   <Plug>CommentaryLine <SID>go() . '_'
 

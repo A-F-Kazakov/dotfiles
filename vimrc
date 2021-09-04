@@ -14,7 +14,7 @@
 	set spr					" Разрешает разделение экрана вертикально
 	set confirm				" Использовать диалоги вместо сообщений об ошибках
 
-	set path+=.,,**
+	set path=.,,**
 	set browsedir=current	" Переходит в каталог с файлом
 	set noswapfile
 
@@ -107,7 +107,6 @@
 	set sm				" Показывает парные символы
 	set wmnu				" Дополнительная информация в строке состояния
 	set ch=1				" Делает строку команд высотой в одну строку
-	"set so=3				" Количество строк внизу и вверху экрана показываемое при прокрутке
 	set ls=2				" Всегда показывает строку состояния
 	set tw=130
 	set cul
@@ -190,8 +189,8 @@
 
 	" Коменарии
 
-		nm \\	<Plug>Commentary
-		vm \\ <Plug>CommentaryLine
+		xm \\	<Plug>Commentary
+		nm \\ <Plug>CommentaryLine
 
 	" Перемещение строк
 
@@ -269,4 +268,10 @@
 			let t:expl_buf_num = bufnr("%")
 		en
 	endf
+
+if filereadable(".ide/config")
+	so .ide/config
+elseif filereadable("config")
+	so config
+en
 

@@ -3,16 +3,12 @@
 
 	"let g:build_generator = ''
 	"let g:build_arch = ''
-	"let g:build_type = ''
+	let g:build_type = 'Debug'
 	"let g:build_target = ''
 
-	"let g:build_options = {'CMAKE_INSTALL_PREFFIX':''}
+	let g:build_options = {'CMAKE_INSTALL_PREFFIX': g:project_cfg_dir . '/install'}
 
-"set path+=
-set ssop+=localoptions,resize,winpos,globals
-set ssop-=blank,help
 set fdo=""
 set fcl=""
 
-ru! ide/config.vim
-ru! ide/tagbar.vim
+ru! ide/project.vim
