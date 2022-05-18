@@ -156,6 +156,14 @@
 
 	nn `` :call ToggleVExplorer()<Cr>
 
+	if has('clipboard')
+		nn <C-p> "*p
+		vn <C-y> "*y
+	else
+		nn <C-p> :r !xclip -o -sel clipboard<Cr>
+		vn <C-y> :'<,'>w !xclip -sel clipboard<Cr><Cr>
+	en
+
 	" Командная строка
 	
 		cno vb vert sb
