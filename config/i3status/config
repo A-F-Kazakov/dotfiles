@@ -1,0 +1,56 @@
+general {
+	colors = true
+	interval = 5
+}
+
+order += "disk /"
+order += "volume master"
+order += "wireless _first_"
+order += "ethernet _first_"
+order += "battery 1"
+order += "cpu_temperature 0"
+order += "cpu_usage all"
+order += "time"
+
+disk "/" {
+	format = " %percentage_used"
+}
+
+volume master {
+	format = " %volume"
+	format_muted = " (%volume)"
+	device = "pulse:1"
+	mixer = "Master"
+	mixer_idx = 0
+}
+
+wireless _first_ {
+	format_up = " %essid - %quality"
+	format_down = " down"
+}
+
+ethernet _first_ {
+	format_up = " %speed"
+	format_down = " down"
+}
+
+battery 1 {
+	format = "%status %percentage %remaining"
+	status_bat = ""
+	status_chr = ""
+	status_full = ""
+	low_threshold = 30
+	threshold_type = percentage
+	integer_battery_capacity = true
+	color_good = "#0000FF"
+}
+
+time {
+	format = " %h %d, %I:%M"
+}
+
+cpu_temperature 0 {
+	format = "%degrees C"
+	max_threshold = 60
+	path = "/sys/class/thermal/thermal_zone0/temp"
+}

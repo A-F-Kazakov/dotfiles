@@ -1,0 +1,132 @@
+" Default
+
+	colorscheme Default
+
+	set vicmd=vim
+	set syscalls
+	set trash
+	set history=100
+	set nofollowlinks
+	set sortnumbers
+	set undolevels=100
+	set novimhelp
+	set norunexec
+	set timefmt=%m/%d\ %H:%M
+	set wildmenu
+	set wildstyle=popup
+	set suggestoptions=normal,visual,view,otherpane,keys,marks,registers
+	set ignorecase
+	set smartcase
+	set nohlsearch
+	set incsearch
+	set scrolloff=3
+	set statusline="%t%= %A %10u:%-7g %15s %20d  "
+
+	if !has('win')
+		 set slowfs=curlftpfs
+	endif
+
+" Marks
+
+	mark h ~/
+
+" Commands
+
+	command! df df -h %m 2> /dev/null
+	command! diff vim -d %f %F
+	command! zip zip -r %f.zip %f
+	command! run !! ./%f
+	command! make !! make %a
+	command! mkcd :mkdir %a | cd %a
+	command! vgrep vim "+grep %a"
+	command! reload :write | restart
+	command link ln -s %d/%f %D
+	command images imv %d &
+
+" File apps
+
+	"Images
+	filetype *.bmp,*.xpm,*.jpg,*.jpeg,*.png,*.gif imv %f &
+	fileviewer *.bmp,*.xpm,*.jpg,*.jpeg,*.png,*.gif echo "Image file"
+
+	" Pdf / Djvu / Cbr
+	filetype *.cbr,*.djvu,*.pdf zathura %f &
+	fileviewer *.cbr,*.djvu,*.pdf echo "Document"
+
+	" Web
+	filetype *.html,*.htm firefox %f &
+	fileviewer *.html,*.htm echo "Web page"
+
+	" Object
+	filetype *.o nm %f | less
+	fileviewer *.o nm %f
+
+	" MD5
+	filetype *.md5 md5sum -c %f %S
+
+	" SHA1
+	filetype *.sha1 sha1sum -c %f %S
+
+	" SHA256
+	filetype *.sha256 sha256sum -c %f %S
+
+	" SHA512
+	filetype *.sha512 sha512sum -c %f %S
+
+	" GPG signature
+	filetype *.asc \ !!gpg --verify %c
+
+	" Zip
+	filetype *.zip,*.jar,*.war,*.ear,*.oxt,*.apkg zip -sf %c | less, tar -xf %c
+	fileviewer *.zip,*.jar,*.war,*.ear,*.oxt zip -sf %c
+
+	" ArchiveMount
+	filetype *.tar,*.tar.bz2,*.tbz2,*.tgz,*.tar.gz,*.tar.xz,*.txz echo "Archieve file"
+	fileviewer *.tgz,*.tar.gz tar -tzf %c
+	fileviewer *.tar.bz2,*.tbz2 tar -tjf %c
+	fileviewer *.tar.txz,*.txz xz --list %c
+	fileviewer *.tar tar -tf %c
+
+	" Rar2FsMount and rar archives
+	filetype *.rar FUSE_MOUNT|rar2fs %SOURCE_FILE %DESTINATION_DIR
+	fileviewer *.rar echo ""
+
+	" IsoMount
+	filetype *.iso FUSE_MOUNT|fuseiso %SOURCE_FILE %DESTINATION_DIR
+
+	" Fuse7z and 7z archives
+	filetype *.7z echo ""
+	fileviewer *.7z 7z l %c
+
+	" Video
+	filetype *.mp4, *.avi mpv %f & >/dev/null
+	fileviewer *.mp4, *.avi echo "Video file"
+
+" Keymaps 	
+
+	" Start shell in current directory
+	nnoremap s :shell<cr>
+
+	" Display sorting dialog
+	nnoremap S :sort<cr>
+
+	" Toggle visibility of preview window
+	nnoremap w :view<cr>
+	vnoremap w :view<cr>gv
+
+	" Yank current directory path into the clipboard
+	nnoremap yd :!echo %d | xclip %i<cr>
+
+	" Yank current file path into the clipboard
+	nnoremap yf :!echo %c:p | xclip %i<cr>
+
+	" Mappings for faster renaming
+	nnoremap I cw<c-a>
+	nnoremap cc cw<c-u>
+	nnoremap A cw
+
+	" Open console in current directory
+	"nnoremap ,t :!xterm &<cr>
+
+	nmap ; :
+

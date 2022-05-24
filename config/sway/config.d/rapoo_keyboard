@@ -1,0 +1,6 @@
+input 9390:8192:RAPOO_RAPOO_2.4G_Wireless_Device 
+{
+    xkb_layout us,ru
+    xkb_options grp:win_space_toggle
+}
+
