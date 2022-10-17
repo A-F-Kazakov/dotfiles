@@ -11,7 +11,7 @@
 	set undolevels=100
 	set novimhelp
 	set norunexec
-	set timefmt=%m/%d\ %H:%M
+	set timefmt=%d.%m.%Y\ %H:%M
 	set wildmenu
 	set wildstyle=popup
 	set suggestoptions=normal,visual,view,otherpane,keys,marks,registers
@@ -21,6 +21,7 @@
 	set incsearch
 	set scrolloff=3
 	set statusline="%t%= %A %10u:%-7g %15s %20d  "
+	set fillchars='vborder:|'
 
 	if !has('win')
 		 set slowfs=curlftpfs
@@ -42,11 +43,13 @@
 	command! reload :write | restart
 	command link ln -s %d/%f %D
 	command images imv %d &
+	"command! print lp -n 1 -o sides=two-sided-long-edge %f
+
 
 " File apps
 
 	"Images
-	filetype *.bmp,*.xpm,*.jpg,*.jpeg,*.png,*.gif imv %f &
+	filetype *.bmp,*.xpm,*.jpg,*.jpeg,*.png,*.gif imv-x11 %f &
 	fileviewer *.bmp,*.xpm,*.jpg,*.jpeg,*.png,*.gif echo "Image file"
 
 	" Pdf / Djvu / Cbr
@@ -115,18 +118,15 @@
 	vnoremap w :view<cr>gv
 
 	" Yank current directory path into the clipboard
-	nnoremap yd :!echo %d | xclip %i<cr>
+	nnoremap yd :!echo -n %d | xclip -sel clip %i<cr>:echo expand('%"d') 'is yanked'<cr>
 
 	" Yank current file path into the clipboard
-	nnoremap yf :!echo %c:p | xclip %i<cr>
+	nnoremap yf :!echo -n %c:p | xclip -sel clip %i<cr>:echo expand('%"c:p') 'is yanked'<cr>
 
 	" Mappings for faster renaming
 	nnoremap I cw<c-a>
 	nnoremap cc cw<c-u>
 	nnoremap A cw
-
-	" Open console in current directory
-	"nnoremap ,t :!xterm &<cr>
 
 	nmap ; :
 
