@@ -130,6 +130,9 @@
 
 " Сочетания клавиш
 
+	nm <Leader>s :source $MYVIMRC<Cr>
+	nm <Leader>v :e $MYVIMRC<Cr>
+
 	ino <C-l> <C-^>
 
 	nn ; :
