@@ -36,9 +36,9 @@ PREFIX="${debian_chroot:+($debian_chroot)}"
 
 if [ "$color_prompt" = yes ]; then
 	if [[ $? == 0 ]]; then
-		SEPARATOR="\[\e[1;32m$SEPARATOR"
+		SEPARATOR="\[\e[1;32m$SEPARATOR\]"
 	else
-		SEPARATOR="\[\e[1;31m$SEPARATOR"
+		SEPARATOR="\[\e[1;31m$SEPARATOR\]"
 	fi
 
     PS1="$PREFIX\[\e[01;34m\]\w $SEPARATOR\[\e[00m\] "
