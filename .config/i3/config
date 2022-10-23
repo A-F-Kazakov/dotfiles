@@ -9,12 +9,11 @@
 	set $screenshot_dir	~/pictures/shots/
 	set $screenshot_name	%Y%m%d_%H%M%S.png
 
-	font pango:monospace 8
+	font pango:monospace, Fontawesome 8
 	default_border pixel	1
 	floating_modifier $mod
 
 	exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
-	#exec --no-startup-id nm-applet
 
 # Use pactl to adjust volume in PulseAudio.
 	set $refresh_i3status killall -SIGUSR1 i3status

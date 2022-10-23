@@ -5,8 +5,9 @@ esac
 
 set -o vi
 shopt -s autocd
-shopt -s histappend
 shopt -s checkwinsize
+shopt -s cmdhist 
+shopt -s histappend
 
 HISTCONTROL=ignoreboth
 HISTSIZE=1000
@@ -30,13 +31,22 @@ if [ -n "$force_color_prompt" ]; then
 	fi
 fi
 
+SEPARATOR='$'
+PREFIX="${debian_chroot:+($debian_chroot)}"
+
 if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w \$\[\033[00m\] '
+	if [[ $? == 0 ]]; then
+		SEPARATOR="\[\e[1;32m$SEPARATOR"
+	else
+		SEPARATOR="\[\e[1;31m$SEPARATOR"
+	fi
+
+    PS1="$PREFIX\[\e[01;34m\]\w $SEPARATOR\[\e[00m\] "
 else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+    PS1="$PREFIX\w $SEPARATOR " 
 fi
 
-unset color_prompt force_color_prompt
+unset color_prompt force_color_prompt SEPARATOR PREFIX
 
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
@@ -64,6 +74,3 @@ if ! shopt -oq posix; then
 fi
 
 export EDITOR="vim"
-
-SEPARATOR='\[\e[1;32m\$\]'
-PS1="\n\[\e[0;34m\] \w $SEPARATOR\[\e[0m\] "
