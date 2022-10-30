@@ -1,5 +1,7 @@
 " Основные
 
+	set nocp
+
 	filetype plugin indent on
 
 	syntax on
@@ -14,7 +16,7 @@
 	set spr					" Разрешает разделение экрана вертикально
 	set confirm				" Использовать диалоги вместо сообщений об ошибках
 
-	set path=.,,**
+	set path+=**
 	set browsedir=current	" Переходит в каталог с файлом
 	set noswapfile
 
@@ -111,22 +113,20 @@
 	set tw=130
 	set cul
 
-	let &t_SI = "\e[6 q"
-	let &t_SR = "\e[4 q"
-	let &t_EI = "\e[2 q"
-	
+	let &t_SI = "\<Esc>[6 q"
+	let &t_SR = "\<Esc>[4 q"
+	let &t_EI = "\<Esc>[2 q"
+
 	aug ccs
 		au!
-		au VimEnter * silent !echo -ne "\e[2 q"
+		autocmd VimEnter * normal! :startinsert :stopinsert
 	aug END
 
 " Браузер	
 
-	let g:netrw_browse_split = 4
 	let g:netrw_altv = 1
 	let g:netrw_banner = 0
 	let g:netrw_liststyle = 3
-	let g:netrw_winsize = 25
 
 " Сочетания клавиш
 
@@ -156,8 +156,6 @@
 
 	nn n nzvzz
 	nn N Nzvzz
-
-	nn `` :call ToggleVExplorer()<Cr>
 
 	if has('clipboard')
 		nn <C-p> "*p
@@ -259,26 +257,6 @@
 		me Encoding.End_line_format.dos<Tab><F8> :set fileformat=dos<Cr>
 		me Encoding.End_line_format.mac<Tab><F8> :set fileformat=mac<Cr>
 		map <F8> :emenu Encoding.End_line_format.<Tab>
-
-" Функции
-
-	fu! ToggleVExplorer()
-		if exists("t:expl_buf_num")
-			let expl_win_num = bufwinnr(t:expl_buf_num)
-			let cur_win_num = winnr()
-			if expl_win_num != -1
-				wh expl_win_num != cur_win_num
-					exe "wincmd w"
-					let cur_win_num = winnr()
-				endw
-				clo
-			en
-			unlet t:expl_buf_num
-		el
-			Vexplore
-			let t:expl_buf_num = bufnr("%")
-		en
-	endf
 
 if filereadable(".ide/config")
 	so .ide/config
