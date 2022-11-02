@@ -258,9 +258,10 @@
 		me Encoding.End_line_format.mac<Tab><F8> :set fileformat=mac<Cr>
 		map <F8> :emenu Encoding.End_line_format.<Tab>
 
-if filereadable(".ide/config")
-	so .ide/config
-elseif filereadable("config")
-	so config
+if index(['gitcommit'], &filetype) != -1
+        if filereadable(.ide/config)
+                so .ide/config
+        elseif filereadable(config)
+                so config
+        en
 en
-
