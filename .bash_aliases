@@ -6,7 +6,7 @@ alias ...='cd ../..'
 
 alias ll='ls -la'
 
-alias ff="find . -type f -name"
+alias ff='find . -type f -name'
 
 alias rm='rm -I --preserve-root'
 

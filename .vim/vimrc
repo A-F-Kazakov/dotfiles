@@ -21,7 +21,7 @@
 	set noswapfile
 
 	set bo=all					" Отключает оповещение об ошибках
-	set cot=menu
+	set cot=menu,longest
 
 	set mouse=a					" Включает поддержку мыши при работе в терминале (без GUI)
 	set mousem=popup
