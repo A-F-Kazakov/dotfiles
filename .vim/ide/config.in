@@ -1,14 +1,10 @@
 "Default project configuration script
+
 " Project definitions
-
-	"let g:build_generator = ''
-	"let g:build_arch = ''
-	let g:build_type = 'Debug'
-	"let g:build_target = ''
-
-	let g:build_options = {'CMAKE_INSTALL_PREFFIX': g:project_cfg_dir . '/install'}
+"let g:project_build_type = 'Release'
 
 set fdo=""
 set fcl=""
 
 ru! ide/project.vim
+

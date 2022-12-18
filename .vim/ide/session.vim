@@ -1,21 +1,17 @@
-if exists("g:loaded_project_session") && g:loaded_project_session
-	finish
-en
-let g:loaded_project_session = 1
+if exists("g:project_session_loaded") && g:loaded_project_session  | finish | en
+let g:project_session_loaded = 1
 
-set ssop-=blank,help
+let g:project.session_path = g:project.folder . '/session'
+
+if exists('g:project_session_file')
+	let g:project.session_path = g:project_session_file
+en
+
+if filereadable(g:project.session_path)
+	exe 'so ' . g:project.session_path
+en
+
+set ssop-=blank,help,options
 set ssop+=localoptions,resize,winpos,globals
 
-if !exists('g:project_config_dir')
-	let g:project_config_dir = '.'
-en
-
-if !exists('g:project_session_file')
-	let g:project_session_file = g:project_config_dir . '/session'
-en
-
-if filereadable(g:project_session_file)
-	exe 'so ' . g:project_session_file
-en
-
-au VimLeavePre * silent! exe 'mks! ' . g:project_session_file
+au VimLeavePre * silent! exe 'mks! ' . g:project.session_path
