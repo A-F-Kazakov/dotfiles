@@ -43,14 +43,14 @@
 	command! reload :write | restart
 	command link ln -s %d/%f %D
 	command images imv %d &
-	"command! print lp -n 1 -o sides=two-sided-long-edge %f
-
+	command! extract extract %a %f %n
+	command! extract! extract -f %a %f %n
 
 " File apps
 
 	"Images
-	filetype *.bmp,*.xpm,*.jpg,*.jpeg,*.png,*.gif imv-x11 %f &
-	fileviewer *.bmp,*.xpm,*.jpg,*.jpeg,*.png,*.gif echo "Image file"
+	filetype   *.svg,*.bmp,*.xpm,*.jpg,*.jpeg,*.png,*.gif imv-x11 %f &
+	fileviewer *.svg,*.bmp,*.xpm,*.jpg,*.jpeg,*.png,*.gif echo "Image file"
 
 	" Pdf / Djvu / Cbr
 	filetype *.cbr,*.djvu,*.pdf zathura %f &
@@ -102,8 +102,8 @@
 	fileviewer *.7z 7z l %c
 
 	" Video
-	filetype *.mp4, *.avi mpv %f & >/dev/null
-	fileviewer *.mp4, *.avi echo "Video file"
+	filetype *.mp4,*.avi mpv %f & >/dev/null
+	fileviewer *.mp4,*.avi ffprobe -v error -show_format %f
 
 " Keymaps 	
 

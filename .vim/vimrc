@@ -165,6 +165,11 @@
 		vn <C-y> :'<,'>w !xclip -sel clipboard<Cr><Cr>
 	en
 
+	augroup x11_clipboard
+		au!
+		au TextYankPost * call system("xclip -sel clip", @")
+	augroup END
+
 	" Командная строка
 	
 		cno vb vert sb
@@ -259,9 +264,9 @@
 		map <F8> :emenu Encoding.End_line_format.<Tab>
 
 if index(['gitcommit'], &filetype) != -1
-        if filereadable(.ide/config)
-                so .ide/config
-        elseif filereadable(config)
-                so config
-        en
+	if filereadable(".ide/config")
+		so .ide/config
+	elseif filereadable("config")
+		so config
+	en
 en

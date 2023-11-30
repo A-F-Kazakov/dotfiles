@@ -6,14 +6,15 @@
 	set $up		k
 	set $right	l
 
-	set $screenshot_dir	~/pictures/shots/
-	set $screenshot_name	%Y%m%d_%H%M%S.png
+	set $screenshot_dir	~/pictures/screenshots/
+	set $screenshot_name	%Y%m%d_%H%M%S_$wx$h.png
 
 	font pango:monospace, Fontawesome 8
 	default_border pixel	1
 	floating_modifier $mod
 
 	exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
+	exec_always "setxkbmap -model pc105 -layout us,ru -variant ,, -option grp:win_space_toggle"
 
 # Use pactl to adjust volume in PulseAudio.
 	set $refresh_i3status killall -SIGUSR1 i3status
@@ -24,7 +25,7 @@
 
 # Key bindings
 
-	bindsym $mod+Ctrl+r mode "resize"
+	bindsym $mod+Ctrl+r	mode "resize"
 	bindsym $mod+Shift+c reload
 	bindsym $mod+Shift+r restart
 	bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
@@ -33,10 +34,10 @@
 	bindsym $mod+r			exec rofi -show run
 	bindsym $mod+Tab		exec rofi -show window
 	bindsym $mod+Return	exec i3-sensible-terminal
-   bindsym $mod+e			exec i3-sensible-terminal -e vifm
-	bindsym Print			exec scrot -u '$screenshot_name' -e 'mv $f $screenshot_dir'
-	bindsym $mod+Print	exec scrot '$screenshot_name' -e 'mv $f $screenshot_dir'
-	bindsym $mod+Escape		exec i3lock
+	bindsym $mod+e			exec i3-sensible-terminal -e vifm
+	bindsym Print			exec scrot '$screenshot_name' -e 'mv $f $screenshot_dir'
+	bindsym --release $mod+Print	exec scrot '$screenshot_name' -s -e 'mv $f $screenshot_dir'
+	bindsym $mod+Escape	exec i3lock
 
 # change focus
 
@@ -75,7 +76,6 @@
 
 	bindsym $mod+Shift+space floating toggle
 	bindsym $mod+space focus mode_toggle
-	#bindsym $mod+a focus parent
 
 # workspaces
 
